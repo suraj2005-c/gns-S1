@@ -1,83 +1,115 @@
 {
-    "routeurs":[
+    "as_numbers": [
+        {"asn": 1, "name": "AS1"},
+        {"asn": 2, "name": "AS2"}
+    ],
+
+    "protocoles": [
         {
-            "hostname":"R1",
-            "as_number":1,
-            "interfaces":[
-                {"nom":"Loopback0","ipv6":"2001:100:100:100::1/128","rip":true,"ospf":false},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:1:1:1::1/64","rip":true,"ospf":false}
+            "nom": "RIP",
+            "version": "RIPng",
+            "parametres": {
+                "redistribution": true,
+                "default_information_originate": false
+            }
+        },
+        {
+            "nom": "OSPF",
+            "version": "OSPFv3",
+            "parametres": {
+                "area": 0,
+                "redistribution": false,
+                "default_information_originate": false
+            }
+        },
+        {
+            "nom": "BGP",
+            "parametres": {
+                "next_hop_self": false,
+                "redistribution": ["connected", "static"],
+                "update_source": "Loopback0"
+            }
+        }
+    ],
+
+    "routeurs": [
+        {
+            "hostname": "R1",
+            "asn": 1,
+            "interfaces": [
+                {"nom": "Loopback0", "ipv6": "2001:100:100:100::1/128", "protocoles": ["RIP"]},
+                {"nom": "GigabitEthernet0/1", "ipv6": "2001:1:1:1::1/64", "protocoles": ["RIP"]}
             ],
-            "bgp_neighbors":[
-                {"ip":"2001:100:100:100::2","remote_as":1,"update_source":"Loopback0","next_hop_self":false},
-                {"ip":"2001:100:100:100::3","remote_as":1,"update_source":"Loopback0","next_hop_self":false}
+            "bgp_neighbors": [
+                {"ip": "2001:100:100:100::2", "remote_as": 1},
+                {"ip": "2001:100:100:100::3", "remote_as": 1}
             ]
         },
         {
-            "hostname":"R2",
-            "as_number":1,
-            "interfaces":[
-                {"nom":"Loopback0","ipv6":"2001:100:100:100::2/128","rip":true,"ospf":false},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:1:1:1::2/64","rip":true,"ospf":false},
-                {"nom":"GigabitEthernet0/2","ipv6":"2001:2:2:2::1/64","rip":true,"ospf":false}
+            "hostname": "R2",
+            "asn": 1,
+            "interfaces": [
+                {"nom": "Loopback0", "ipv6": "2001:100:100:100::2/128", "protocoles": ["RIP"]},
+                {"nom": "GigabitEthernet0/1", "ipv6": "2001:1:1:1::2/64", "protocoles": ["RIP"]},
+                {"nom": "GigabitEthernet0/2", "ipv6": "2001:2:2:2::1/64", "protocoles": ["RIP"]}
             ],
-            "bgp_neighbors":[
-                {"ip":"2001:100:100:100::1","remote_as":1,"update_source":"Loopback0","next_hop_self":false},
-                {"ip":"2001:100:100:100::3","remote_as":1,"update_source":"Loopback0","next_hop_self":false}
+            "bgp_neighbors": [
+                {"ip": "2001:100:100:100::1", "remote_as": 1},
+                {"ip": "2001:100:100:100::3", "remote_as": 1}
             ]
         },
         {
-            "hostname":"R3",
-            "as_number":1,
-            "interfaces":[
-                {"nom":"Loopback0","ipv6":"2001:100:100:100::3/128","rip":true,"ospf":false},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:2:2:2::2/64","rip":false,"ospf":false},
-                {"nom":"GigabitEthernet0/2","ipv6":"2001:3:3:3::1/64","rip":true,"ospf":false}
+            "hostname": "R3",
+            "asn": 1,
+            "interfaces": [
+                {"nom": "Loopback0", "ipv6": "2001:100:100:100::3/128", "protocoles": ["RIP"]},
+                {"nom": "GigabitEthernet0/1", "ipv6": "2001:2:2:2::2/64", "protocoles": []},
+                {"nom": "GigabitEthernet0/2", "ipv6": "2001:3:3:3::1/64", "protocoles": ["RIP"]}
             ],
-            "bgp_neighbors":[
-                {"ip":"2001:100:100:100::1","remote_as":1,"update_source":"Loopback0","next_hop_self":true},
-                {"ip":"2001:100:100:100::2","remote_as":1,"update_source":"Loopback0","next_hop_self":true},
-                {"ip":"2001:3:3:3::2","remote_as":2,"update_source":"null","next_hop_self":false}
+            "bgp_neighbors": [
+                {"ip": "2001:100:100:100::1", "remote_as": 1},
+                {"ip": "2001:100:100:100::2", "remote_as": 1},
+                {"ip": "2001:3:3:3::2", "remote_as": 2}
             ]
         },
         {
-            "hostname":"R4",
-            "as_number":2,
-            "interfaces":[
-                {"nom":"Loopback0","ipv6":"2001:100:100:100::4/128","rip":false,"ospf":true},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:3:3:3::2/64","rip":false,"ospf":false},
-                {"nom":"GigabitEthernet0/2","ipv6":"2001:4:4:4::1/64","rip":false,"ospf":true}
+            "hostname": "R4",
+            "asn": 2,
+            "interfaces": [
+                {"nom": "Loopback0", "ipv6": "2001:100:100:100::4/128", "protocoles": ["OSPF"]},
+                {"nom": "GigabitEthernet0/1", "ipv6": "2001:3:3:3::2/64", "protocoles": []},
+                {"nom": "GigabitEthernet0/2", "ipv6": "2001:4:4:4::1/64", "protocoles": ["OSPF"]}
             ],
-            "bgp_neighbors":[
-                {"ip":"2001:100:100:100::6","remote_as":2,"update_source":"Loopback0","next_hop_self":true},
-                {"ip":"2001:3:3:3::1","remote_as":1,"update_source":"null","next_hop_self":false},
-                {"ip":"2001:100:100:100::5","remote_as":2,"update_source":"Loopback0","next_hop_self":true}
+            "bgp_neighbors": [
+                {"ip": "2001:100:100:100::6", "remote_as": 2},
+                {"ip": "2001:3:3:3::1", "remote_as": 1},
+                {"ip": "2001:100:100:100::5", "remote_as": 2}
             ]
         },
         {
-            "hostname":"R5",
-            "as_number":2,
-            "interfaces":[
-                {"nom":"Loopback0","ipv6":"2001:100:100:100::5/128","rip":false,"ospf":true},
-                {"nom":"GigabitEthernet0/2","ipv6":"2001:4:4:4::2/64","rip":false,"ospf":true},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:5:5:5::1/64","rip":false,"ospf":false}
+            "hostname": "R5",
+            "asn": 2,
+            "interfaces": [
+                {"nom": "Loopback0", "ipv6": "2001:100:100:100::5/128", "protocoles": ["OSPF"]},
+                {"nom": "GigabitEthernet0/2", "ipv6": "2001:4:4:4::2/64", "protocoles": ["OSPF"]},
+                {"nom": "GigabitEthernet0/1", "ipv6": "2001:5:5:5::1/64", "protocoles": []}
             ],
-            "bgp_neighbors":[
-                {"ip":"2001:100:100:100::6","remote_as":2,"update_source":"Loopback0","next_hop_self":false},
-                {"ip":"2001:100:100:100::4","remote_as":2,"update_source":"Loopback0","next_hop_self":false}
+            "bgp_neighbors": [
+                {"ip": "2001:100:100:100::6", "remote_as": 2},
+                {"ip": "2001:100:100:100::4", "remote_as": 2}
             ]
         },
         {
-            "hostname":"R6",
-            "as_number":2,
-            "interfaces":[
-                {"nom":"Loopback0","ipv6":"2001:100:100:100::6/128","rip":false,"ospf":true},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:4:4:4::3/64","rip":false,"ospf":true}
+            "hostname": "R6",
+            "asn": 2,
+            "interfaces": [
+                {"nom": "Loopback0", "ipv6": "2001:100:100:100::6/128", "protocoles": ["OSPF"]},
+                {"nom": "GigabitEthernet0/1", "ipv6": "2001:4:4:4::3/64", "protocoles": ["OSPF"]}
             ],
-            "bgp_neighbors":[
-                {"ip":"2001:100:100:100::5","remote_as":2,"update_source":"Loopback0","next_hop_self":false},
-                {"ip":"2001:100:100:100::4","remote_as":2,"update_source":"Loopback0","next_hop_self":false}
+            "bgp_neighbors": [
+                {"ip": "2001:100:100:100::5", "remote_as": 2},
+                {"ip": "2001:100:100:100::4", "remote_as": 2}
             ]
         }
     ]
-
 }
