@@ -5,7 +5,7 @@
             "as_number":1,
             "interfaces":[
                 {"nom":"Loopback0","ipv6":"2001:100:100:100::1/128","rip":true,"ospf":false},
-                {"nom":"GigabitEthernet0/1","ipv6":"2001:1:1:1::1/64","rip":true,"ospf":true}
+                {"nom":"GigabitEthernet0/1","ipv6":"2001:1:1:1::1/64","rip":true,"ospf":false}
             ],
             "bgp_neighbors":[
                 {"ip":"2001:100:100:100::2","remote_as":1,"update_source":"Loopback0","next_hop_self":false},
