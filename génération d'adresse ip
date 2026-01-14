@@ -1,0 +1,46 @@
+import ipaddress
+import random
+
+# --- ÉTAPE 1 : On invente le préfixe de base ---
+# On prend un nombre au hasard pour que ce soit différent à chaque fois
+hasard = random.randint(1000, 9999)
+prefixe = f"2001:db8:{hasard}"
+
+# --- ÉTAPE 2 : On décide du nombre de routeurs ---
+# Entre 2 et 4, comme tu as demandé
+nb_routeurs = random.randint(2, 4)
+print(f"J'ai {nb_routeurs} routeurs à configurer.\n")
+
+# --- ÉTAPE 3 : On génère les adresses Loopback ---
+# Une Loopback est une adresse "interne" au routeur. Elle est toujours en /128.
+print("--- ADRESSES LOOPBACK (pour chaque routeur) ---")
+for r in range(1, nb_routeurs + 1):
+    # On crée une adresse unique comme :2001:db8:xxxx:L::1
+    ip_loopback = f"{prefixe}:L::{r}/128"
+    print(f"Routeur {r} -> Loopback0 : {ip_loopback}")
+
+print("-" * 50)
+
+# --- ÉTAPE 4 : On génère les liaisons entre les routeurs ---
+# Pour que deux routeurs se parlent, il faut qu'ils soient sur le MÊME sous-réseau.
+# On va relier le Routeur 1 au Routeur 2, le 2 au 3, etc.
+
+print("--- ADRESSES D'INTERFACES (Liaisons voisins) ---")
+for i in range(1, nb_routeurs):
+    # On crée un sous-réseau /64 pour chaque câble
+    # Exemple : ...:1::/64, puis ...:2::/64
+    sous_reseau_cable = f"{prefixe}:{i}::/64"
+    
+    # On prépare les deux adresses pour les deux bouts du câble
+    # Routeur A (le premier) prend l'adresse ::1
+    # Routeur B (le voisin) prend l'adresse ::2
+    ip_routeur_a = f"{prefixe}:{i}::1/64"
+    ip_routeur_b = f"{prefixe}:{i}::2/64"
+    
+    print(f"Liaison entre Routeur {i} et Routeur {i+1} :")
+    print(f"  Interface sur Routeur {i}   : {ip_routeur_a}")
+    print(f"  Interface sur Routeur {i+1} : {ip_routeur_b}")
+    print(f"  [Vérification] Ils sont bien tous les deux dans {sous_reseau_cable}")
+    print("  ---")
+
+print("\nFin de la génération !")
