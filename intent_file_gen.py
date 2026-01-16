@@ -12,8 +12,7 @@ def initialisation_json(nb_as):
                     "nom": "RIP",
                     "version": "RIPng",
                     "parametres": {
-                        "redistribution": True,
-                        "default_information_originate": False
+                        "redistribution": True, #pq
                     }
                 },
                 {
@@ -21,23 +20,22 @@ def initialisation_json(nb_as):
                     "version": "OSPFv3",
                     "parametres": {
                         "area": 0,
-                        "redistribution": False,
-                        "default_information_originate": False
+                        "redistribution": False, # pq
                     }
                 },
                 {
                     "nom": "BGP",
                     "parametres": {
-                        "next_hop_self": False,
-                        "redistribution": ["connected", "static"],
-                        "update_source": "Loopback0"
+                        "next_hop_self": False, #expliquer
+                        "redistribution": ["connected", "static"], #expl
+                        "update_source": "Loopback0" #expli
                     }
                 }
             ],
             "routeurs": []
         }
     
-    for i in range(1,nb_as):
+    for i in range(0,nb_as):
         data_f["as_numbers"].append({"asn": i, "name": f"AS{i}"})
     
     return data_f
@@ -75,17 +73,19 @@ def add_rtr(as_nb, rtr_id, protocole):
     return data  
 
 def add_interface(rtr_data,protocole):
-    name = input("Nom de l'interface (ex: FastEthernet0/0 GigaEthernet1/0) : ")
-    ipv6 = input("Adresse IPv6/Masque : ")
+    name = input("Ajouter une interface (ex: FastEthernet0/0 GigaEthernet1/0) : ")
+    ipv6 = input("Adresse IPv6 : ")
     rtr_data["interfaces"].append({
         "name": name,
         "ipv6": ipv6,
         "protocole": [f"{protocole}"]
     })
 
-def add_bgp_neighbor(neigh_address, neigh_as, interface):
+def add_bgp_neighbor(neigh_address, neigh_as, rtr_data):
     print("Ajout des voisins BGP")
-
+    rtr_data["bgp_neighbors"].append(
+        {"ip": f"{neigh_address}", "remote_as": neigh_as}
+    )
 
 if __name__ == '__main__':
     init()
