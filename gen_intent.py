@@ -4,7 +4,7 @@ import os
 import random
 
 def inject_ips_into_intent():
-    intent_file = 'intent_file.json'
+    intent_file= 'intent_file.json'
     
     if not os.path.exists(intent_file):
         print(f"Error: {intent_file} not found.")
@@ -28,7 +28,7 @@ def inject_ips_into_intent():
         ip_loopback = f"{prefix_loopback}::{router_id}/128"
         
         for intf in r['interfaces']:
-            if "Loopback" in intf['name']:
+            if "Loopback" in intf['nom']:
                 intf['ipv6'] = ip_loopback
                 print(f"{r['hostname']} Loopback0 : {ip_loopback}")
         
@@ -49,12 +49,12 @@ def inject_ips_into_intent():
             ip_left = f"{prefix_link}::1/64"
             ip_right = f"{prefix_link}::2/64"
 
-            intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['name'] and "::" not in iface['ipv6']), None)
+            intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['nom'] and "::" not in iface['ipv6']), None)
             
             if not intf_left_obj:
-                 intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['name']), None)
+                 intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['nom']), None)
 
-            intf_right_obj = next((iface for iface in router_map[host_right]['interfaces'] if "Gigabit" in iface['name']), None)
+            intf_right_obj = next((iface for iface in router_map[host_right]['interfaces'] if "Gigabit" in iface['nom']), None)
             
             if intf_left_obj and intf_right_obj:
                 intf_left_obj['ipv6'] = ip_left
