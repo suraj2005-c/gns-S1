@@ -35,7 +35,7 @@ def initialisation_json(nb_as):
             "routeurs": []
         }
     
-    for i in range(0,nb_as):
+    for i in range(1,nb_as+1):
         data_f["as_numbers"].append({"asn": i, "name": f"AS{i}"})
     
     return data_f
@@ -44,29 +44,30 @@ def init():
 
     as_nb = int(input("Combien d'AS voulez vous ? "))
     intent_file = initialisation_json(as_nb)
-
-    for i in range(as_nb):
+    rtr_global_id = 0
+    for i in range(1, as_nb + 1):
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
         protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
 
-        for j in range(rtr_nb):
-            data = add_rtr(as_nb,j,protocole)
-            int_nb = int(input(f"Configurez un nombre d'interfaces pour le routeur :  {j} ? "))
+        for j in range(1,rtr_nb+1):
+            data = add_rtr(rtr_global_id, i, protocole)
+            int_nb = int(input(f"Configurez un nombre d'interfaces pour le routeur R{rtr_global_id} : "))
             for k in range(int_nb):
                 add_interface(data, protocole)
             
             intent_file["routeurs"].append(data)
+            rtr_global_id += 1
 
     with open("intent_file.json", "w", encoding="utf-8") as f:
         json.dump(intent_file, f, indent=4)
     print("\nL'intent_file.json a été généré. ")
 
 
-def add_rtr(as_nb, rtr_id, protocole):
+def add_rtr(rtr_global_id, as_num, protocole):
     print("Ajout de routeur : ")
     data ={
-            "hostname": f"R{rtr_id}",
-            "asn": as_nb,
+            "hostname": f"R{rtr_global_id}",
+            "asn": as_num,
             "interfaces": [],
             "bgp_neighbors": []
          }
