@@ -10,12 +10,12 @@ def inject_ips_into_intent():
         print(f"Error: {intent_file} not found.")
         return
 
-    with open(intent_file, 'r') as f:
+    with open(intent_file, 'r') as f: #ouvre le fichier en mode lecture et transforme le fichier en un dictionnaire phython
         data = json.load(f)
     
     routers = data['routers']
     nb_routeurs = len(routers)
-    router_map = {r['hostname']: r for r in routers}
+    router_map = {r['hostname']: r for r in routers}  #crée un dico pour acceder directement au routeur
 
     prefix_loopback = "2001:100:100:100"
     
@@ -35,7 +35,7 @@ def inject_ips_into_intent():
         #rechrche des routeurs utilisant BGp ex R3 et R4
         if 'bgp_config' in r:
             r['bgp_config']['router_id'] = f"{router_id}.{router_id}.{router_id}.{router_id}" #fixe le routeur id ex R1->1.1.1.1
-            r['bgp_config']['networks'] = [ip_loopback] #pas compris
+            r['bgp_config']['networks'] = [ip_loopback] #liste des reseaux annonncé via bgp
 
     print("\n--- Physical Links ---")
     
@@ -45,19 +45,19 @@ def inject_ips_into_intent():
         host_right = f"R{k+1}"
         
         if host_left in router_map and host_right in router_map:
-            prefix_link = f"2001:{k}:{k}:{k}"
+            prefix_link = f"2001:{k}:{k}:{k}" #prefixe unique pour chaque cable
             
             ip_left = f"{prefix_link}::1/64"
             ip_right = f"{prefix_link}::2/64"
 
-            intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['nom'] and "::" not in iface['ipv6']), None)
+            intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['nom'] and "::" not in iface['ipv6']), None) #cherche l'interface de gauche qui n'a pas d'adresse
             
             if not intf_left_obj:
-                 intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['nom']), None)
+                 intf_left_obj = next((iface for iface in router_map[host_left]['interfaces'] if "Gigabit" in iface['nom']), None) #si tt les interfaces ont une @ elle prend l'interface dispo par defaut
 
             intf_right_obj = next((iface for iface in router_map[host_right]['interfaces'] if "Gigabit" in iface['nom']), None)
             
-            if intf_left_obj and intf_right_obj:
+            if intf_left_obj and intf_right_obj: #vérifie avant de continuer
                 intf_left_obj['ipv6'] = ip_left
                 intf_right_obj['ipv6'] = ip_right
                 
@@ -69,21 +69,22 @@ def inject_ips_into_intent():
     print("\n--- BGP Neighbors ---")
     for r in routers:
         if 'bgp_config' in r:
-            for neighbor in r['bgp_config'].get('neighbors', []):
-                old_ip = neighbor['ip']
+            for neighbor in r['bgp_config'].get('neighbors', []): #parcour la liste des voisins bgp 
+                old_ip = neighbor['ip'] #recupere l'@ ip temporaire qui est dans le json
 
-                match = re.search(r'::(\d+)', old_ip)
+                match = re.search(r'::(\d+)', old_ip) #prend le dernier num de @ ip
                 if match:
-                    neighbor_id = match.group(1)
+                    neighbor_id = match.group(1) 
 
-                    new_neighbor_ip = f"{prefix_loopback}::{neighbor_id}"
-                    neighbor['ip'] = new_neighbor_ip
+                    new_neighbor_ip = f"{prefix_loopback}::{neighbor_id}" #reconstruit l'ip du voisin 
+                    neighbor['ip'] = new_neighbor_ip #met a jour le fichier json
 
-    with open(intent_file, 'w') as f:
+    with open(intent_file, 'w') as f: #ouvre fichier en mode ecriture et le modifie
         json.dump(data, f, indent=4)
     
     print(f"\nSuccess. {intent_file} updated with topology rules.")
 
 if __name__ == "__main__":
     inject_ips_into_intent()
+
 
