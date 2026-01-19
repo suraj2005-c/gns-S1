@@ -12,7 +12,7 @@ def initialisation_json(nb_as):
                     "nom": "RIP",
                     "version": "RIPng",
                     "parametres": {
-                        "redistribution": True, #pq
+                        "redistribution": False, #pq
                     }
                 },
                 {
