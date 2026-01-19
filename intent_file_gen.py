@@ -51,9 +51,10 @@ def init():
 
         for j in range(1,rtr_nb+1):
             data = add_rtr(rtr_global_id, i, protocole)
+            add_loopback(data,protocole)
             int_nb = int(input(f"Configurez un nombre d'interfaces pour le routeur R{rtr_global_id} : "))
             for k in range(int_nb):
-                add_interface(data, protocole)
+                add_interface(data, protocole, k+1)
             
             intent_file["routeurs"].append(data)
             rtr_global_id += 1
@@ -73,13 +74,19 @@ def add_rtr(rtr_global_id, as_num, protocole):
          }
     return data  
 
-def add_interface(rtr_data,protocole):
-    name = input("Ajouter une interface (ex: FastEthernet0/0 GigaEthernet1/0) : ")
-    ipv6 = ""
+def add_interface(rtr_data,protocole, indice):
+    name = f"GigabitEthernet{indice}/0"
     rtr_data["interfaces"].append({
         "name": name,
-        "ipv6": ipv6,
+        "ipv6": "",
         "protocole": [f"{protocole}"]
+    })
+
+def add_loopback(rtr_data, protocole):
+    rtr_data["interfaces"].append({
+        "name": "Loopback0",
+        "ipv6" : "",
+        "protocole":[f"{protocole}"]
     })
 
 if __name__ == '__main__':
