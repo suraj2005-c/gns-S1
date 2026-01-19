@@ -19,7 +19,7 @@ def initialisation_json(nb_as):
                     "nom": "OSPF",
                     "version": "OSPFv3",
                     "parametres": {
-                        "area": 0,
+                        "area": 0, #expliquer aussi
                         "redistribution": False, # pq
                     }
                 },
@@ -75,18 +75,12 @@ def add_rtr(rtr_global_id, as_num, protocole):
 
 def add_interface(rtr_data,protocole):
     name = input("Ajouter une interface (ex: FastEthernet0/0 GigaEthernet1/0) : ")
-    ipv6 = input("Adresse IPv6 : ")
+    ipv6 = ""
     rtr_data["interfaces"].append({
         "name": name,
         "ipv6": ipv6,
         "protocole": [f"{protocole}"]
     })
-
-def add_bgp_neighbor(neigh_address, neigh_as, rtr_data):
-    print("Ajout des voisins BGP")
-    rtr_data["bgp_neighbors"].append(
-        {"ip": f"{neigh_address}", "remote_as": neigh_as}
-    )
 
 if __name__ == '__main__':
     init()
