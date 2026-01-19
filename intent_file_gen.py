@@ -44,7 +44,7 @@ def init():
 
     as_nb = int(input("Combien d'AS voulez vous ? "))
     intent_file = initialisation_json(as_nb)
-    rtr_global_id = 0
+    rtr_global_id = 1
     for i in range(1, as_nb + 1):
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
         protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
