@@ -27,7 +27,7 @@ def initialisation_json(nb_as):
                     "nom": "BGP",
                     "parametres": {
                         "next_hop_self": False, #expliquer
-                        "redistribution": ["connected"] #expl
+                        "redistribution": ["connected"], #expl
                         "update_source": "Loopback0" #expli
                     }
                 }
