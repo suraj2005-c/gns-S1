@@ -1,7 +1,7 @@
 import json
 import re
 import os
-import random
+
 
 def inject_ips_into_intent():
     intent_file= 'intent_file.json'
@@ -58,8 +58,6 @@ def inject_ips_into_intent():
                 intf_left_obj['ipv6'] = ip_left
                 intf_right_obj['ipv6'] = ip_right
 
-
-    print("\n--- BGP Neighbors ---")
     
     as_routers = {}
     for r in routers:
@@ -74,32 +72,64 @@ def inject_ips_into_intent():
             if not isinstance(r['bgp_neighbors'], list):
                 r['bgp_neighbors'] = []
             
-            current_asn = r.get('asn')
+            asn = r.get('asn')
             hostname = r['hostname']
             
 
-            for peer in as_routers.get(current_asn, []):
-                if peer['hostname'] != hostname:  #n ajoute pas lui meme comme voisin
-                    peer_id = int(peer['hostname'][1:])
-                    peer_loopback = f"{prefix_loopback}::{peer_id}"
+            for voisin in as_routers.get(asn, []):
+                if voisin['hostname'] != hostname:  #n ajoute pas lui meme comme voisin
+                    voisin_id = int(voisin['hostname'][1:])
+                    voisin_loopback = f"{prefix_loopback}::{voisin_id}"
                     
-                    neighbor_exists = any(n.get('ip') == peer_loopback for n in r['bgp_neighbors'])
+                    neighbor_exists = any(n.get('ip') == voisin_loopback for n in r['bgp_neighbors'])
                     
                     if not neighbor_exists:
                         r['bgp_neighbors'].append({
-                            'ip': peer_loopback,
-                            'remote_as': current_asn
+                            'ip': voisin_loopback,
+                            'remote_as': asn
                         })
             
             for neighbor in r['bgp_neighbors']:
-                old_ip = neighbor.get('ip', '')
-                if old_ip and '::' in old_ip and old_ip != f"{prefix_loopback}::{int(r['hostname'][1:])}":
-                    match = re.search(r'::(\d+)', old_ip)
+                ip = neighbor.get('ip', '')
+                if ip and '::' in ip and ip != f"{prefix_loopback}::{int(r['hostname'][1:])}":
+                    match = re.search(r'::(\d+)', ip)
                     if match:
                         neighbor_id = match.group(1)
                         new_neighbor_ip = f"{prefix_loopback}::{neighbor_id}"
                         if neighbor['ip'] != new_neighbor_ip: #evite de reaffecter la meme ip
                             neighbor['ip'] = new_neighbor_ip
+    
+    for r in routers:
+        asn = r.get('asn')
+        hostname = r['hostname']
+        
+        if 'neighbors' in r and r['neighbors']:
+            for neighbor in r['neighbors']:
+                if isinstance(neighbor, list):
+                    for n in neighbor:
+                        neighbor_name = n.get('hostname') if isinstance(n, dict) else n
+                        neighbor_intf_name = n.get('interface') if isinstance(n, dict) else None
+                        
+                        if neighbor_name in router_map:
+                            neighbor_r = router_map[neighbor_name]
+                            neighbor_asn = neighbor_r.get('asn')
+                            
+                            if neighbor_asn != asn and neighbor_asn is not None:
+                                neighbor_intf_obj = None
+                                if neighbor_intf_name:
+                                    neighbor_intf_obj = next((i for i in neighbor_r['interfaces'] if i['name'] == neighbor_intf_name), None)
+                                
+                                if neighbor_intf_obj and neighbor_intf_obj.get('ipv6'):
+                                    neighbor_bgp_ip = neighbor_intf_obj['ipv6'].split('/')[0] if '/' in neighbor_intf_obj['ipv6'] else neighbor_intf_obj['ipv6']
+                                    
+                                    neighbor_exists = any(n.get('ip') == neighbor_bgp_ip for n in r['bgp_neighbors'])
+                                    
+                                    if not neighbor_exists:
+                                        r['bgp_neighbors'].append({
+                                            'ip': neighbor_bgp_ip,
+                                            'remote_as': neighbor_asn
+                                        })
+                                        
     with open(intent_file, 'w') as f: #ouvre fichier en mode ecriture et le modifie
         json.dump(data, f, indent=4)
 
