@@ -59,29 +59,44 @@ def genere_config():
                     lines.append(" exit")
                 lines.append("!")
         if 'bgp_neighbors' in r and r['bgp_neighbors']:
-            bgp=r['bgp_neighbors']
-            asn=r['asn']
+            bgp_neighbors = r['bgp_neighbors']
+            asn = r['asn']
             lines.append(f"router bgp {asn}")
-            if isinstance(bgp, dict) and 'router-id' in bgp:
-                lines.append(f" bgp router-id {bgp['router-id']}")
+            
+            if 'router_id' in r:
+                lines.append(f" bgp router-id {r['router_id']}")
+            
             lines.append(" no bgp default ipv4-unicast")
             lines.append(" bgp log-neighbor-changes")
-            if isinstance(bgp, dict):
-                for neighbor in bgp.get('neighbors',[]):
+            
+            a_voisins_externes = any(n['remote_as'] != asn for n in bgp_neighbors)
+            
+            if isinstance(bgp_neighbors, list):
+                for neighbor in bgp_neighbors:
                     lines.append(f" neighbor {neighbor['ip']} remote-as {neighbor['remote_as']}")
+                    if neighbor['remote_as'] == asn:
+                        lines.append(f" neighbor {neighbor['ip']} update-source Loopback0")
                     if neighbor.get('update_source'):
-                        lines.append(f" neighbor {neighbor['ip']} update-source {neighbor['update-source']}")
+                        lines.append(f" neighbor {neighbor['ip']} update-source {neighbor['update_source']}")
+                
                 lines.append(" !")
                 lines.append(" address-family ipv6")
-                for net in bgp.get('networks',[]):
-                    lines.append(f"  network {net}")
-                for neighbor in bgp.get('neighbors',[]):
+                
+                if 'networks' in r:
+                    for net in r['networks']:
+                        lines.append(f"  network {net}")
+                
+                for neighbor in bgp_neighbors:
                     lines.append(f"  neighbor {neighbor['ip']} activate")
-                    if 'next_hop_self' in neighbor:
-                        if neighbor['next_hop_self']:
-                            lines.append(f"  neighbor {neighbor['ip']} next-hop-self")
+                    if neighbor['remote_as'] == asn:
+                        lines.append(f"  neighbor {neighbor['ip']} next-hop-self")
+                    elif neighbor.get('next_hop_self'):
+                        lines.append(f"  neighbor {neighbor['ip']} next-hop-self")
+                
                 lines.append(" exit-address-family")
-                lines.append(" exit")
+            
+            lines.append(" exit")
+            lines.append("!")
         filename=os.path.join(output_dir, f"{hostname}.cfg")
         try:
             with open(filename,'w') as f_out:
