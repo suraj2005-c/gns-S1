@@ -18,8 +18,15 @@ def genere_config():
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     for r in data['routeurs']:
+        asn=r['asn']
         hostname=r['hostname']
         lines=[]
+        lines.append("!")
+        lines.append("\n")
+        lines.append("!")
+        lines.append("version 15.2")
+        lines.append("service timestamps debug datetime msec")
+        lines.append("service timestamps log datetime msec")
         lines.append("!")
         lines.append(f"hostname {hostname}")
         lines.append("ipv6 unicast-routing")
@@ -34,9 +41,9 @@ def genere_config():
             for proto in protocoles_actifs:
                 protocoles_a_activer.add(proto)
                 if proto.lower() == 'rip':
-                    lines.append(" ipv6 rip rip1 enable")
+                    lines.append(f" ipv6 rip rip{asn} enable")
                 elif proto.lower() == 'ospf':
-                    lines.append(" ipv6 ospf 5 area 0")
+                    lines.append(f" ipv6 ospf {asn} area 0")
 
             lines.append( "exit")
             lines.append("!")
@@ -49,7 +56,7 @@ def genere_config():
                         lines.append(" redistribute connected")
                     lines.append(" exit")
                 elif p.get('nom').upper() == 'OSPF':
-                    lines.append("ipv6 router ospf 5")
+                    lines.append(f"ipv6 router ospf {asn}")
                     digits = re.findall(r'\d+', hostname)
                     if digits:
                         rid=digits[0]
