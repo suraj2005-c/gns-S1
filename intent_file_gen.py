@@ -94,16 +94,18 @@ def add_loopback(rtr_data, protocole):
 
 def ask_n_add_neigh(rtr_id, rtr_data):
     neigh_list = []
+    interface = 1
     while True:
         print(f"Veuillez donner le nom d'un des voisins de R{rtr_id} dans le format suivant ex : 'R1', 'R3' etc.")
         print(f"S'il n'y a plus de voisins restants écrivez 'STOP' ")
         rout = input(f"Quels sont les voisins du routeur R{rtr_id} ? ")
         if (rout == "STOP"):
             break
-        int= input(f"Quelle interface voulez-vous utiliser pour vous connecter à {rout} ? (ex: GigabitEthernet1/0) ")
+        int= f"GigabitEthernet{interface}/0"
         neigh_list.append({
             "hostname": rout,
             "interface": int})
+        interface = interface+1
     rtr_data["neighbors"].append(neigh_list)
     return neigh_list
 
