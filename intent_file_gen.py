@@ -52,7 +52,9 @@ def init():
         for j in range(1,rtr_nb+1):
             data = add_rtr(rtr_global_id, i, protocole)
             add_loopback(data,protocole)
-            int_nb = int(input(f"Configurez un nombre d'interfaces pour le routeur R{rtr_global_id} : "))
+            neigh_list = ask_n_add_neigh(rtr_global_id, data)
+
+            int_nb = len(neigh_list)
             for k in range(int_nb):
                 add_interface(data, protocole, k+1)
             
@@ -70,6 +72,7 @@ def add_rtr(rtr_global_id, as_num, protocole):
             "hostname": f"R{rtr_global_id}",
             "asn": as_num,
             "interfaces": [],
+            "neighbors": [],
             "bgp_neighbors": []
          }
     return data  
@@ -88,6 +91,18 @@ def add_loopback(rtr_data, protocole):
         "ipv6" : "",
         "protocole":[f"{protocole}"]
     })
+
+def ask_n_add_neigh(rtr_id, rtr_data):
+    neigh_list = []
+    while True:
+        print(f"Veuillez donner le nom d'un des voisins de R{rtr_id} dans le format suivant ex : 'R1', 'R3' etc.")
+        print(f"S'il n'y a plus de voisins restants écrivez 'STOP' ")
+        rout = input(f"Quels sont les voisins du routeur R{rtr_id} ? ")
+        if (rout == "STOP"):
+            break
+        neigh_list.append(rout)
+    rtr_data["neighbors"].append(neigh_list)
+    return neigh_list
 
 if __name__ == '__main__':
     init()
