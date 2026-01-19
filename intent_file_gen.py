@@ -100,7 +100,10 @@ def ask_n_add_neigh(rtr_id, rtr_data):
         rout = input(f"Quels sont les voisins du routeur R{rtr_id} ? ")
         if (rout == "STOP"):
             break
-        neigh_list.append(rout)
+        int= input(f"Quelle interface voulez-vous utiliser pour vous connecter à {rout} ? (ex: GigabitEthernet1/0) ")
+        neigh_list.append({
+            "hostname": rout,
+            "interface": int})
     rtr_data["neighbors"].append(neigh_list)
     return neigh_list
 
