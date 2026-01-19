@@ -19,7 +19,9 @@ def generate_configurations():
         os.makedirs(output_dir)
     project_name = data.get('project_name','Projet_GNS')
     print(f"Demarrage de la generation pour le projet : {project_name}")
-    protocoles_list = data.get('protocoles', [])
+
+    
+    protocoles_list = data.get('protocoles', [])#récupération du fichier json sous forme de list/get en cas d'oubli crée un list vide
     for proto in protocoles_list:
         nom = proto.get('nom', '')
         if nom:
