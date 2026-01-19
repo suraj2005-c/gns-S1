@@ -27,10 +27,8 @@ def generate_configurations():
             protocol_definitions[nom] = {
                 'protocol_type': 'rip' if nom == 'RIP' else 'ospf' if nom == 'OSPF' else 'bgp',
                 'process_id': 1,
-                'process_name': proto.get('version', 'RIPng'),
                 'area': proto.get('parametres', {}).get('area', 0),
-                'router_id_auto': True,
-                'redistribute_connected': proto.get('parametres', {}).get('redistribution', False)
+
             }
     
     for router in data['routers']:
