@@ -20,13 +20,12 @@ def generate_configurations():
     project_name = data.get('project_name','Projet_GNS')
     print(f"Demarrage de la generation pour le projet : {project_name}")
     protocoles_list = data.get('protocoles', [])
-    protocol_definitions = {}
     for proto in protocoles_list:
         nom = proto.get('nom', '')
         if nom:
             protocol_definitions[nom] = {
                 'protocol_type': 'rip' if nom == 'RIP' else 'ospf' if nom == 'OSPF' else 'bgp',
-                'process_id': 1,
+                'process_id': 1,           #pour ospf
                 'area': proto.get('parametres', {}).get('area', 0),
 
             }
