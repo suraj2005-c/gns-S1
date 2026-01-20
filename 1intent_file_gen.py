@@ -12,7 +12,7 @@ def initialisation_json(nb_as):
                     "nom": "RIP",
                     "version": "RIPng",
                     "parametres": {
-                        "redistribution": False, #pq
+                        "redistribution": True, #pq ---> car au moment de passer d'un as a un autre comportant du rip le routeur frontiere va devoir annoncer la route en rip pour que l'info circule dans l'as
                     }
                 },
                 {
@@ -20,15 +20,15 @@ def initialisation_json(nb_as):
                     "version": "OSPFv3",
                     "parametres": {
                         "area": 0, #expliquer aussi
-                        "redistribution": False, # pq
+                        "redistribution": True, # pq ---> la meme que rip
                     }
                 },
                 {
                     "nom": "BGP",
                     "parametres": {
-                        "next_hop_self": False, #expliquer
-                        "redistribution": ["connected"], #expl
-                        "update_source": "Loopback0" #expli
+                        "next_hop_self": True, #expliquer
+                        "redistribution": ["connected"], #expl--> prend uniquement ce qui est branché physiquement et ignore le reste (securité)
+                        "update_source": "Loopback0" #expli---> force le routeur a communiquer entre eux par l'@ loopback
                     }
                 }
             ],
