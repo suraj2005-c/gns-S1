@@ -1,6 +1,6 @@
 import json
 
-def initialisation_json(nb_as):
+def initialisation_json(nb_as): #creation de dictionnaire
     data_f = {
              "as_numbers": [],
              "protocoles": [
@@ -25,26 +25,26 @@ def initialisation_json(nb_as):
             ],
             "routeurs": []
         }
-    for i in range(1,nb_as+1):
+    for i in range(1,nb_as+1): #boucle qui cree le nb d'as demande par l'user et creer une liste ou on ajt
         data_f["as_numbers"].append({"asn": i, "name": f"AS{i}"})
     return data_f
 
 def init():
-    as_nb = int(input("Combien d'AS voulez vous ? "))
+    as_nb = int(input("Combien d'AS voulez vous ? ")) #demande nb as
     intent_file_data = initialisation_json(as_nb)
     rtr_global_id = 1
     for i in range(1, as_nb + 1):
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
         protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
 
-        for j in range(1,rtr_nb+1):
-            data = add_rtr(rtr_global_id, i, protocole)
-            add_loopback(data, protocole)
+        for j in range(1,rtr_nb+1): #pour chaque routeur dans l'as
+            data = add_rtr(rtr_global_id, i, protocole)  #initialise la structure du routeur
+            add_loopback(data, protocole) #ajt l'interface loopback
             
-            # On récupère ici la liste des interfaces qui sont externes
+            # On récupère la liste des interfaces qui sont externes et le dico cost qui associe chaque num a son cout
             costs, external_interfaces = ask_n_add_neigh(rtr_global_id, data, protocole, i)
 
-            for interface_num, cost in costs.items():
+            for interface_num, cost in costs.items(): #creer l'interface pour les voisins declares
                 # Si l'interface est dans external_interfaces, on passe None au lieu du protocole
                 current_proto = None if interface_num in external_interfaces else protocole
                 add_interface(data, current_proto, interface_num, cost)
@@ -61,7 +61,6 @@ def add_rtr(rtr_global_id, as_num, protocole):
 
 def add_interface(rtr_data, protocole, indice, cost=None):
     name = f"GigabitEthernet{indice}/0"
-    # Si protocole est None, on met une liste vide pour ne pas avoir d'IGP
     proto_list = [f"{protocole}"] if protocole else []
     interface_data = {"name": name, "ipv6": "", "protocole": proto_list}
     
@@ -81,14 +80,14 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num):
         rout = input(f"Voisin du routeur R{rtr_id} (ou 'STOP') ? ")
         if (rout == "STOP"): break
         
-        # AJOUT : On demande l'AS du voisin
+        # demande l'as du voisin
         v_as = int(input(f"Quel est l'AS de {rout} ? "))
         if v_as != as_num:
             external_interfaces.append(interface)
         
         int_name = f"GigabitEthernet{interface}/0"
         cost = None
-        # On ne demande le coût OSPF que si le voisin est dans le même AS
+        # Demande le cout de ospf que si cest dans le meme as
         if protocole.lower() == "ospf" and v_as == as_num:
             cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? "))
             costs[interface] = cost
