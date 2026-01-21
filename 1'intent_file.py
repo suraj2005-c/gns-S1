@@ -1,8 +1,4 @@
-# générateur de intent_file pour le Projet GNS3
 import json
-
-intent_file = open("intent_file.json", "w")
-
 
 def initialisation_json(nb_as):
     data_f = {
@@ -11,39 +7,31 @@ def initialisation_json(nb_as):
                 {
                     "nom": "RIP",
                     "version": "RIPng",
-                    "parametres": {
-                        "redistribution": True, #pq
-                    }
+                    "parametres": {"redistribution": True}
                 },
                 {
                     "nom": "OSPF",
                     "version": "OSPFv3",
-                    "parametres": {
-                        "area": 0, #expliquer aussi
-                        "redistribution": True, # pq
-                    }
+                    "parametres": {"area": 0, "redistribution": True}
                 },
                 {
                     "nom": "BGP",
                     "parametres": {
-                        "next_hop_self": True, #expliquer
-                        "redistribution": ["connected"], #expl
-                        "update_source": "Loopback0" #expli
+                        "next_hop_self": True,
+                        "redistribution": ["connected"],
+                        "update_source": "Loopback0"
                     }
                 }
             ],
             "routeurs": []
         }
-    
     for i in range(1,nb_as+1):
         data_f["as_numbers"].append({"asn": i, "name": f"AS{i}"})
-    
     return data_f
 
 def init():
-
     as_nb = int(input("Combien d'AS voulez vous ? "))
-    intent_file = initialisation_json(as_nb)
+    intent_file_data = initialisation_json(as_nb)
     rtr_global_id = 1
     for i in range(1, as_nb + 1):
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
@@ -52,83 +40,65 @@ def init():
         for j in range(1,rtr_nb+1):
             data = add_rtr(rtr_global_id, i, protocole)
             add_loopback(data, protocole)
-            costs = ask_n_add_neigh(rtr_global_id, data, protocole, i)
-
-            # Ajouter les interfaces GigabitEthernet avec les coûts
-            for interface_num, cost in costs.items():
-                add_interface(data, protocole, interface_num, cost)
             
-            intent_file["routeurs"].append(data)
+            # On récupère ici la liste des interfaces qui sont externes
+            costs, external_interfaces = ask_n_add_neigh(rtr_global_id, data, protocole, i)
+
+            for interface_num, cost in costs.items():
+                # Si l'interface est dans external_interfaces, on passe None au lieu du protocole
+                current_proto = None if interface_num in external_interfaces else protocole
+                add_interface(data, current_proto, interface_num, cost)
+            
+            intent_file_data["routeurs"].append(data)
             rtr_global_id += 1
 
     with open("intent_file.json", "w", encoding="utf-8") as f:
-        json.dump(intent_file, f, indent=4)
+        json.dump(intent_file_data, f, indent=4)
     print("\nL'intent_file.json a été généré. ")
 
-
 def add_rtr(rtr_global_id, as_num, protocole):
-    print("Ajout de routeur : ")
-    data ={
-            "hostname": f"R{rtr_global_id}",
-            "asn": as_num,
-            "interfaces": [],
-            "neighbors": [],
-            "bgp_neighbors": []
-         }
-    return data  
+    return {"hostname": f"R{rtr_global_id}", "asn": as_num, "interfaces": [], "neighbors": [], "bgp_neighbors": []}
 
 def add_interface(rtr_data, protocole, indice, cost=None):
     name = f"GigabitEthernet{indice}/0"
-    interface_data = {
-        "name": name,
-        "ipv6": "",
-        "protocole": [f"{protocole}"]
-    }
-    if protocole.lower() == "ospf" and cost is not None:
+    # Si protocole est None, on met une liste vide pour ne pas avoir d'IGP
+    proto_list = [f"{protocole}"] if protocole else []
+    interface_data = {"name": name, "ipv6": "", "protocole": proto_list}
+    
+    if protocole and protocole.lower() == "ospf" and cost is not None:
         interface_data["cost"] = cost
     rtr_data["interfaces"].append(interface_data)
 
 def add_loopback(rtr_data, protocole):
-    rtr_data["interfaces"].append({
-        "name": "Loopback0",
-        "ipv6" : "",
-        "protocole":[f"{protocole}"]
-    })
+    rtr_data["interfaces"].append({"name": "Loopback0", "ipv6" : "", "protocole":[f"{protocole}"]})
 
 def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num):
     neigh_list = []
     interface = 1
     costs = {}
+    external_interfaces = [] # Liste pour noter quelles interfaces sortent de l'AS
     while True:
-        print(f"Veuillez donner le nom d'un des voisins de R{rtr_id} dans le format suivant ex : 'R1', 'R3' etc.")
-        print(f"S'il n'y a plus de voisins restants écrivez 'STOP' ")
-        rout = input(f"Quels sont les voisins du routeur R{rtr_id} ? ")
-        if (rout == "STOP"):
-            break
-        int_name = f"GigabitEthernet{interface}/0"
+        rout = input(f"Voisin du routeur R{rtr_id} (ou 'STOP') ? ")
+        if (rout == "STOP"): break
         
-        # Demander le coût si c'est OSPF
+        # AJOUT : On demande l'AS du voisin
+        v_as = int(input(f"Quel est l'AS de {rout} ? "))
+        if v_as != as_num:
+            external_interfaces.append(interface)
+        
+        int_name = f"GigabitEthernet{interface}/0"
         cost = None
-        if protocole.lower() == "ospf":
-            while True:
-                try:
-                    cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? "))
-                    if cost > 0:
-                        break
-                    else:
-                        print("Le coût doit être un nombre positif.")
-                except ValueError:
-                    print("Veuillez entrer un nombre valide.")
+        # On ne demande le coût OSPF que si le voisin est dans le même AS
+        if protocole.lower() == "ospf" and v_as == as_num:
+            cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? "))
             costs[interface] = cost
         else:
             costs[interface] = None
         
-        neigh_list.append({
-            "hostname": rout,
-            "interface": int_name})
-        interface = interface+1
+        neigh_list.append({"hostname": rout, "interface": int_name})
+        interface += 1
     rtr_data["neighbors"].append(neigh_list)
-    return costs
+    return costs, external_interfaces
 
 if __name__ == '__main__':
     init()
