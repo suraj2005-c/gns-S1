@@ -12,7 +12,7 @@ def initialisation_json(nb_as):
                     "nom": "RIP",
                     "version": "RIPng",
                     "parametres": {
-                        "redistribution": False, #pq
+                        "redistribution": True, #pq
                     }
                 },
                 {
@@ -20,13 +20,13 @@ def initialisation_json(nb_as):
                     "version": "OSPFv3",
                     "parametres": {
                         "area": 0, #expliquer aussi
-                        "redistribution": False, # pq
+                        "redistribution": True, # pq
                     }
                 },
                 {
                     "nom": "BGP",
                     "parametres": {
-                        "next_hop_self": False, #expliquer
+                        "next_hop_self": True, #expliquer
                         "redistribution": ["connected"], #expl
                         "update_source": "Loopback0" #expli
                     }
