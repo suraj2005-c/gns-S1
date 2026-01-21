@@ -22,7 +22,6 @@ def genere_config():
         hostname=r['hostname'] #et son nom
         lines=[]
         lines.append("!")
-        lines.append("\n")
         lines.append("!")
         lines.append("version 15.2")
         lines.append("service timestamps debug datetime msec")
@@ -33,6 +32,8 @@ def genere_config():
         lines.append("!")
         protocoles_a_activer= set() #création d'un set vide pour ne pas avoir de doublons
         for interface in r['interfaces']:
+            if not interface.get('ipv6') or interface['ipv6'].strip() == '':
+                continue
             lines.append(f"interface {interface['name']}")
             lines.append(f" ipv6 address {interface['ipv6']}")
             lines.append(" ipv6 enable")
@@ -53,8 +54,8 @@ def genere_config():
         for proto in protocoles_a_activer: #config le protocole avec le set une fois par routeur
             if proto.lower() in protocoles_dict: #converti en minuscule lower
                 p = protocoles_dict[proto.lower()]
-                if p.get('nom').upper() == 'RIP': #upper majuscule
-                    lines.append(f"ipv6 router rip rip{asn}")
+                if p.get('nom').upper() == 'RIP':
+                    lines.append("ipv6 router rip rip1")
                     if p.get('parametres',{}).get('redistribution'):
                         lines.append(" redistribute connected")
                     lines.append(" exit")
@@ -82,12 +83,12 @@ def genere_config():
             a_voisins_externes = any(n['remote_as'] != asn for n in bgp_neighbors)
             
             if isinstance(bgp_neighbors, list):
-                for neighbor in bgp_neighbors:
-                    lines.append(f" neighbor {neighbor['ip']} remote-as {neighbor['remote_as']}")
-                    if neighbor['remote_as'] == asn:
-                        lines.append(f" neighbor {neighbor['ip']} update-source Loopback0")
-                    if neighbor.get('update_source'):
-                        lines.append(f" neighbor {neighbor['ip']} update-source {neighbor['update_source']}")
+                for n in bgp_neighbors:
+                    lines.append(f" neighbor {n['ip']} remote-as {n['remote_as']}")
+                    if n['remote_as'] == asn:
+                        lines.append(f" neighbor {n['ip']} update-source Loopback0")
+                    if n.get('update_source'):
+                        lines.append(f" neighbor {n['ip']} update-source {n['update_source']}")
                 
                 lines.append(" !")
                 lines.append(" address-family ipv6") #famille d'adresse ipv6
@@ -96,18 +97,34 @@ def genere_config():
                     for net in r['networks']:
                         lines.append(f"  network {net}")
                 
-                for neighbor in bgp_neighbors:
-                    lines.append(f"  neighbor {neighbor['ip']} activate") #active le voisin
-                    if neighbor['remote_as'] == asn:
-                        lines.append(f"  neighbor {neighbor['ip']} next-hop-self")
-                    elif neighbor.get('next_hop_self'):
-                        lines.append(f"  neighbor {neighbor['ip']} next-hop-self")
+                for n in bgp_neighbors:
+                    lines.append(f"  neighbor {n['ip']} activate") #active le voisin
+                    if n['remote_as'] == asn:
+                        lines.append(f"  neighbor {n['ip']} next-hop-self")
+                    elif n.get('next_hop_self'):
+                        lines.append(f"  neighbor {n['ip']} next-hop-self")
+                    elif n.get('next_hop_self'):
+                        lines.append(f"  neighbor {n['ip']} next-hop-self")
                 
                 lines.append(" exit-address-family")
             
             lines.append(" exit")
             lines.append("!")
-        filename=os.path.join(output_dir, f"{hostname}.cfg")
+        lines.append("!")
+        lines.append("line con 0")
+        lines.append(" exec-timeout 0 0")
+        lines.append(" logging synchronous")
+        lines.append(" privilege level 15")
+        lines.append(" no login")
+        lines.append("line aux 0")
+        lines.append(" exec-timeout 0 0")
+        lines.append(" logging synchronous")
+        lines.append(" privilege level 15")
+        lines.append(" no login")
+        lines.append("!")
+        lines.append("end")
+        index=re.findall(r'\d+', hostname)
+        filename=os.path.join(output_dir, f"i{index[0]}_startup-config.cfg")
         try:
             with open(filename,'w') as f_out:
                 f_out.write('\n'.join(lines)) #ecrit les lignes dans le fichier
@@ -118,3 +135,6 @@ def genere_config():
 
 if __name__=='__main__':
     genere_config()
+
+
+
