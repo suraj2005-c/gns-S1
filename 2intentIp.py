@@ -45,7 +45,7 @@ def inject_ips_into_intent():
             for neighbor in r['neighbors']: #parcours les voisins
                 if isinstance(neighbor, list): #vérif si les voisins sont bien dans une liste retourne true or false
                     for n in neighbor:#parcours chaque voisin
-                        neighbor_name = n.get('hostname')  n #recup nom du voisin et de l'interface
+                        neighbor_name = n.get('hostname')   #recup nom du voisin et de l'interface
                         local_intf_name = n.get('interface') 
                         
                         if local_intf_name and neighbor_name in router_map: #vérifie qu’une interface locale définie,routeur voisin def dans le dico
@@ -57,7 +57,7 @@ def inject_ips_into_intent():
                                 neighbor_r = router_map[neighbor_name]#recup voisin
                                 neighbor_intf_obj = None #interface du voisin pas def
                                 
-                               if neighbor_r.get('neighbors'): #vérifie la présence dans le dico
+                                if neighbor_r.get('neighbors'): #vérifie la présence dans le dico
                                     for nb in neighbor_r['neighbors']:
                                             for nb_n in nb: #parcours la liste
                                                 if nb_n.get('hostname') == hostname: #verif le bon hostanme recup
@@ -138,5 +138,6 @@ def inject_ips_into_intent():
 
 if __name__ == "__main__":
     inject_ips_into_intent()
+
 
 
