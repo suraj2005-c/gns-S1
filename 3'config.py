@@ -73,6 +73,8 @@ def genere_config():
                         lines.append(f" router-id {rid}.{rid}.{rid}.{rid}")
                     else: #id par defaut
                         lines.append(" router-id 1.1.1.1")
+                    if p.get('parametres',{}).get('redistribution'):
+                        lines.append(" redistribute connected")
                     lines.append(" exit")
                 lines.append("!")
         if 'bgp_neighbors' in r and r['bgp_neighbors']: #vérifie si le routeur a des voisins bgp
@@ -98,6 +100,7 @@ def genere_config():
                 
                 lines.append(" !")
                 lines.append(" address-family ipv6") #famille d'adresse ipv6
+                lines.append("  redistribute connected")
                 
                 if 'networks' in r:
                     for net in r['networks']:
