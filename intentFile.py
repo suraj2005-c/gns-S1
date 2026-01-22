@@ -11,17 +11,17 @@ def initialisation_json(nb_as): #creation de dictionnaire
                 {
                     "nom": "RIP",
                     "version": "RIPng",
-                    "parametres": {"redistribution": False}
+                    "parametres": {"redistribution": True}
                 },
                 {
                     "nom": "OSPF",
                     "version": "OSPFv3",
-                    "parametres": {"area": 0, "redistribution": False}
+                    "parametres": {"area": 0, "redistribution": True}
                 },
                 {
                     "nom": "BGP",
                     "parametres": {
-                        "next_hop_self": False,
+                        "next_hop_self": True,
                         "redistribution": ["connected"],
                         "update_source": "Loopback0"
                     }
