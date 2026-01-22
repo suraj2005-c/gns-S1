@@ -90,24 +90,15 @@ def genere_config():
         lines.append("!")
         lines.append(f"hostname {hostname}")
         lines.append("ipv6 unicast-routing")
-        #  BLOC EEM POUR FORCER L'ALLUMAGE 
-        lines.append("event manager applet FORCE_UP")
-        lines.append(" event syslog pattern \"Line protocol on Interface.*changed state to down\"")#dès qu'il voit line protocl active les actions
-        lines.append(" action 1.0 cli command \"enable\"")#cmd en 
-        lines.append(f" action 2.cli command \"copy startup-config running-config\"")
-        # boucle pour chaque interface soit en up
-        for i, interface in enumerate(r['interfaces']):
-            lines.append(f" action 3.{i} cli command \"interface {interface['name']}\"")
-            lines.append(f" action 4.{i} cli command \"no shutdown\"")
-        lines.append(" action 5.0 cli command \"end\"")
         lines.append("!")
         protocoles_a_activer= set() #création d'un set vide pour ne pas avoir de doublons
         for interface in r['interfaces']:
             if not interface.get('ipv6') or interface['ipv6'].strip() == '':
                 continue
             lines.append(f"interface {interface['name']}")
-            lines.append(f" ipv6 address {interface['ipv6']}")
+            lines.append(" no ip address")            
             lines.append(" ipv6 enable")
+            lines.append(f" ipv6 address {interface['ipv6']}")
             lines.append(" no shutdown")
             protocoles_actifs=interface.get('protocole',[]) #liste des proto sur cette interface
             for proto in protocoles_actifs:
@@ -211,6 +202,5 @@ def genere_config():
 
 if __name__=='__main__':
     genere_config()
-
 
 
