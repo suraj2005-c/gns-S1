@@ -47,21 +47,21 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::1/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:12::1/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:13::1/64",
                     "protocole": [
                         "rip"
                     ]
@@ -79,7 +79,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::2",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::3",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::4",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::5",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::6",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::7",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "1.1.1.1",
+            "networks": [
+                "2001:100:100:100::1/128"
+            ]
         },
         {
             "hostname": "R2",
@@ -87,28 +116,28 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::2/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:12::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:23::1/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:24::1/64",
                     "protocole": [
                         "rip"
                     ]
@@ -130,7 +159,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::1",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::3",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::4",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::5",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::6",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::7",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "2.2.2.2",
+            "networks": [
+                "2001:100:100:100::2/128"
+            ]
         },
         {
             "hostname": "R3",
@@ -138,28 +196,28 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::3/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:13::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:23::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:35::1/64",
                     "protocole": [
                         "rip"
                     ]
@@ -181,7 +239,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::1",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::2",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::4",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::5",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::6",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::7",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "3.3.3.3",
+            "networks": [
+                "2001:100:100:100::3/128"
+            ]
         },
         {
             "hostname": "R4",
@@ -189,35 +276,35 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::4/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:24::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:45::1/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:46::1/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet4/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:47::1/64",
                     "protocole": [
                         "rip"
                     ]
@@ -243,7 +330,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::1",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::2",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::3",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::5",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::6",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::7",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "4.4.4.4",
+            "networks": [
+                "2001:100:100:100::4/128"
+            ]
         },
         {
             "hostname": "R5",
@@ -251,35 +367,35 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::5/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:35::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:45::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:56::1/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet4/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:57::1/64",
                     "protocole": [
                         "rip"
                     ]
@@ -305,7 +421,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::1",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::2",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::3",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::4",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::6",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::7",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "5.5.5.5",
+            "networks": [
+                "2001:100:100:100::5/128"
+            ]
         },
         {
             "hostname": "R6",
@@ -313,28 +458,28 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::6/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:46::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:56::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:68::1/64",
                     "protocole": []
                 }
             ],
@@ -354,7 +499,40 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::1",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::2",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::3",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::4",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::5",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::7",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:68::2",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "6.6.6.6",
+            "networks": [
+                "2001:100:100:100::6/128"
+            ]
         },
         {
             "hostname": "R7",
@@ -362,28 +540,28 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::7/128",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:47::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:57::2/64",
                     "protocole": [
                         "rip"
                     ]
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:79::1/64",
                     "protocole": []
                 }
             ],
@@ -403,7 +581,40 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::1",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::2",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::3",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::4",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::5",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:100:100::6",
+                    "remote_as": 1
+                },
+                {
+                    "ip": "2001:100:79::2",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "7.7.7.7",
+            "networks": [
+                "2001:100:100:100::7/128"
+            ]
         },
         {
             "hostname": "R8",
@@ -411,19 +622,19 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::8/128",
                     "protocole": [
                         "ospf"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:68::2/64",
                     "protocole": []
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:810::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -431,7 +642,7 @@
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:811::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -454,7 +665,40 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::9",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::10",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::11",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::12",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::13",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::14",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:68::1",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "8.8.8.8",
+            "networks": [
+                "2001:100:100:100::8/128"
+            ]
         },
         {
             "hostname": "R9",
@@ -462,19 +706,19 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::9/128",
                     "protocole": [
                         "ospf"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:79::2/64",
                     "protocole": []
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:910::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -482,7 +726,7 @@
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:911::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -505,7 +749,40 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::8",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::10",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::11",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::12",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::13",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::14",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:79::1",
+                    "remote_as": 1
+                }
+            ],
+            "router_id": "9.9.9.9",
+            "networks": [
+                "2001:100:100:100::9/128"
+            ]
         },
         {
             "hostname": "R10",
@@ -513,14 +790,14 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::10/128",
                     "protocole": [
                         "ospf"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:810::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -528,7 +805,7 @@
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:910::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -536,7 +813,7 @@
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1011::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -544,7 +821,7 @@
                 },
                 {
                     "name": "GigabitEthernet4/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1012::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -571,7 +848,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::8",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::9",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::11",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::12",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::13",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::14",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "10.10.10.10",
+            "networks": [
+                "2001:100:100:100::10/128"
+            ]
         },
         {
             "hostname": "R11",
@@ -579,14 +885,15 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::11/128",
                     "protocole": [
                         "ospf"
                     ]
+
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:811::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -594,7 +901,7 @@
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:911::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -602,7 +909,7 @@
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1011::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -610,7 +917,7 @@
                 },
                 {
                     "name": "GigabitEthernet4/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1113::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -637,7 +944,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::8",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::9",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::10",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::12",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::13",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::14",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "11.11.11.11",
+            "networks": [
+                "2001:100:100:100::11/128"
+            ]
         },
         {
             "hostname": "R12",
@@ -645,14 +981,14 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::12/128",
                     "protocole": [
                         "ospf"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1012::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -660,7 +996,7 @@
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1213::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -668,7 +1004,7 @@
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1214::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -691,7 +1027,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::8",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::9",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::10",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::11",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::13",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::14",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "12.12.12.12",
+            "networks": [
+                "2001:100:100:100::12/128"
+            ]
         },
         {
             "hostname": "R13",
@@ -699,14 +1064,14 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::13/128",
                     "protocole": [
                         "ospf"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1113::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -714,7 +1079,7 @@
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1213::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -722,7 +1087,7 @@
                 },
                 {
                     "name": "GigabitEthernet3/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1314::1/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -745,7 +1110,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::8",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::9",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::10",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::11",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::12",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::14",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "13.13.13.13",
+            "networks": [
+                "2001:100:100:100::13/128"
+            ]
         },
         {
             "hostname": "R14",
@@ -753,14 +1147,14 @@
             "interfaces": [
                 {
                     "name": "Loopback0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:100:100::14/128",
                     "protocole": [
                         "ospf"
                     ]
                 },
                 {
                     "name": "GigabitEthernet1/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1214::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -768,7 +1162,7 @@
                 },
                 {
                     "name": "GigabitEthernet2/0",
-                    "ipv6": "",
+                    "ipv6": "2001:100:1314::2/64",
                     "protocole": [
                         "ospf"
                     ],
@@ -787,7 +1181,36 @@
                     }
                 ]
             ],
-            "bgp_neighbors": []
+            "bgp_neighbors": [
+                {
+                    "ip": "2001:100:100:100::8",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::9",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::10",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::11",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::12",
+                    "remote_as": 2
+                },
+                {
+                    "ip": "2001:100:100:100::13",
+                    "remote_as": 2
+                }
+            ],
+            "router_id": "14.14.14.14",
+            "networks": [
+                "2001:100:100:100::14/128"
+            ]
         }
     ]
 }
