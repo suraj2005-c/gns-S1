@@ -2,9 +2,17 @@ import json
 import os #créer des dossiers et manipuler les chemins de fichiers
 import re #recherches rapide
 
+
+project_path = input("Entrez le chemin complet du projet : ")
+intent_file='intent_file.json' #fichier source
+
+def trouver_fichier_config(dossier_router, nom_fichier):
+    for racines, dirs, files in os.walk(dossier_router):
+        if nom_fichier in files:
+            return os.path.join(racines, nom_fichier)
 def genere_config():
-    intent_file='intent_file.json' #fichier source
-    output_dir='configs' #dossier contenant les fichiers .cfg
+
+
     try:
         with open(intent_file,'r') as f:
             data=json.load(f) #lis et converti en dico
@@ -15,8 +23,6 @@ def genere_config():
         print(f"Erreur : Impossible de lire le fichier '{intent_file}'. Vérifiez la syntaxe JSON. ")
         return
     protocoles_dict = {p['nom'].lower(): p for p in data.get('protocoles',[])} #récupération des protocoles sous forme de dico
-    if not os.path.exists(output_dir): #cree le dossier s'il n'existe pas
-        os.makedirs(output_dir)
     for r in data['routeurs']: #pour chaque routeur
         asn=r['asn'] #prend le num de l'as
         hostname=r['hostname'] #et son nom
@@ -124,14 +130,16 @@ def genere_config():
         lines.append("!")
         lines.append("end")
         index=re.findall(r'\d+', hostname)
-        filename=os.path.join(output_dir, f"i{index[0]}_startup-config.cfg")
+        index_rtr=index[0]
+        filename=f"i{index_rtr}_startup-config.cfg"
+        chemin_complet=trouver_fichier_config(project_path,filename)
         try:
-            with open(filename,'w') as f_out:
+            with open(chemin_complet,'w') as f_out:
                 f_out.write('\n'.join(lines)) #ecrit les lignes dans le fichier
             print(f"   -> Fichier généré : {filename}")
         except IOError as e:
             print(f"   Erreur lors de l'écriture de {filename} : {e}")
-    print(f"\nTerminé. Les configurations se trouvent dans le dossier '{output_dir}'.")
+    print(f"\nTerminé. Les fichiers config ont été générés et placés dans les dossiers des routeurs correspondants.")
 
 if __name__=='__main__':
     genere_config()
