@@ -20,10 +20,21 @@ def get_path():
 
     if ask_path == 'y':
         while True:
-            project_path = input("Veuillez entrer le chemin vers votre projet : ")
+            raw_path = input("Veuillez entrer le chemin vers votre projet : ").strip()
+            
+            raw_path = raw_path.replace('"', '').replace("'", "")
+            
+            if sys_type == "wsl" and (raw_path.startswith("C:") or raw_path.startswith("D:")):
+                drive = raw_path[0].lower() # récupère 'c' ou 'd'
+                translated_path = raw_path.replace("\\", "/")
+                project_path = re.sub(r'^[a-zA-Z]:', f'/mnt/{drive}', translated_path)
+                print(f"Chemin Windows détecté, traduction pour WSL : {project_path}")
+            else:
+                project_path = raw_path
+
             if os.path.exists(project_path):
                 break
-            print("Erreur : Le chemin spécifié n'existe pas. Réessayez.")
+            print(f"Erreur : Le chemin [{project_path}] n'existe pas. Réessayez.")
     else:
         project_name = input("Entrez le nom du projet : ")
         user = getpass.getuser()
@@ -201,6 +212,3 @@ def genere_config():
 
 if __name__=='__main__':
     genere_config()
-
-
-
