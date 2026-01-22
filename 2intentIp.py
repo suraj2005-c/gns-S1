@@ -1,143 +1,125 @@
 import json
-import re
 import os
 
-
 def inject_ips_into_intent():
-    intent_file= 'intent_file.json'
-    
+    intent_file="intent_file.json"
+
     if not os.path.exists(intent_file):
-        print(f"Error: {intent_file} not found.")
+        print(f"Erreur: {intent_file} n'existe pas.")
         return
-
-    with open(intent_file, 'r') as f: #ouvre le fichier en mode lecture et transforme le fichier en un dictionnaire phython
-        data = json.load(f)
     
-    routers = data['routeurs']
-    nb_routeurs = len(routers)
-    router_map = {r['hostname']: r for r in routers}  #crée un dico pour acceder directement au routeur plus rapide que une liste
+    with open(intent_file, 'r') as file:
+        data=json.load(file)
 
-    prefix_loopback = "2001:100:100:100"
-    
+    plages=data.get("plages_ip", {})
+    prefixe_physiques=plages["physiques"]
+    prefixe_loopback=plages["loopback"]
+    routeurs=data.get("routeurs", [])
+    routeurs_map={r['hostname']: r for r in routeurs}
 
-    #crée des adresses loopbacks pour chaque routeur
-    for r in routers:
-        router_id = int(r['hostname'][1:]) #garde l'id du routeur ex: R1
-        ip_loopback = f"{prefix_loopback}::{router_id}/128"
+    processed_links=set()
 
-        #associer addresse aux loopback
+    for r in routeurs:
+        id=int(r['hostname'][1:])
+        hostname=r['hostname']
+
+        ip_loopback=f"{prefixe_loopback}::{id}/128"
         for intf in r['interfaces']:
-            if "Loopback" in intf['name']: #cherche +vite
-                intf['ipv6'] = ip_loopback
+            if "Loopback" in intf['name']:
+                intf['ipv6']=ip_loopback
 
-        #rechrche des routeurs utilisant BGp ex R3 et R4
-        if 'bgp_neighbors' in r and isinstance(r['bgp_neighbors'], list):
-            r['router_id'] = f"{router_id}.{router_id}.{router_id}.{router_id}" #fixe le routeur id ex R1->1.1.1.1
-            r['networks'] = [ip_loopback] #liste des reseaux annonncé via bgp
-
-    link_counter = 1 #compteur pour chaque lien
-    processed_links = set() #stock les liens déjà avec des IP
-    #Attribuer adresses IPv6 aux liens entre routeur
-    for r in routers:
-        hostname = r['hostname']
-        
-        if 'neighbors' in r and r['neighbors']:#vérifie si y'a des voisins
-            for neighbor in r['neighbors']: #parcours les voisins
-                if isinstance(neighbor, list): #vérif si les voisins sont bien dans une liste retourne true or false
-                    for n in neighbor:#parcours chaque voisin
-                        neighbor_name = n.get('hostname')   #recup nom du voisin et de l'interface
-                        local_intf_name = n.get('interface') 
-                        
-                        if local_intf_name and neighbor_name in router_map: #vérifie qu’une interface locale définie,routeur voisin def dans le dico
-                            link_key = tuple(sorted([hostname, neighbor_name])) #peut se lire dans les 2 sens
-                            
-                            if link_key not in processed_links: #vérifie que le lien n'a pas été traité
-                                processed_links.add(link_key)#marque le lien
-                                local_intf_obj = next((i for i in r['interfaces'] if i['name'] == local_intf_name), None) #recup premier interface avec le bon nom en parcourant la liste
-                                neighbor_r = router_map[neighbor_name]#recup voisin
-                                neighbor_intf_obj = None #interface du voisin pas def
-                                
-                                if neighbor_r.get('neighbors'): #vérifie la présence dans le dico
-                                    for nb in neighbor_r['neighbors']:
-                                            for nb_n in nb: #parcours la liste
-                                                if nb_n.get('hostname') == hostname: #verif le bon hostanme recup
-                                                    neighbor_intf_name = nb_n.get('interface') #recup le nom de l'interface du voisin du meme lien
-                                                    if neighbor_intf_name:
-                                                        neighbor_intf_obj = next((i for i in neighbor_r['interfaces'] if i['name'] == neighbor_intf_name), None)#parcours toutes les interfaces jusqu'à la bonne
-                                                        break # sortie de la boucle dès qu'on trouve la bonne interface
-                                #attribut un préfixe aux 2 interfaces du lien
-                                if local_intf_obj and neighbor_intf_obj:#vérif que y'a bien 2 interface et donc un lien
-                                    prefix_link = f"2001:{link_counter}:{link_counter}:{link_counter}" #attrviut un préfixe ne fonction du numéro du lien
-                                    local_intf_obj['ipv6'] = f"{prefix_link}::1/64"#donne les IP aux interfaces
-                                    neighbor_intf_obj['ipv6'] = f"{prefix_link}::2/64"
-                                    link_counter += 1 #passe au lien suivant
-
-    
-    as_routers = {}
-    for r in routers:
-        asn = r.get('asn')
-        if asn not in as_routers:
-            as_routers[asn] = []
-        as_routers[asn].append(r)
-    
-
-    for r in routers:
         if 'bgp_neighbors' in r:
-            r['bgp_neighbors'] = []
-        else:
-            r['bgp_neighbors'] = []
-    
-
-    for r in routers:
-        asn = r.get('asn')
-        hostname = r['hostname']
+            r['router_id']=f"{id}.{id}.{id}.{id}"
+            r['networks']=[ip_loopback]
         
-        for voisin in as_routers.get(asn, []):
-            if voisin['hostname'] != hostname:  
-                voisin_id = int(voisin['hostname'][1:])
-                voisin_loopback = f"{prefix_loopback}::{voisin_id}"
-                
+        if 'neighbors' in r :
+            for neigh_group in r['neighbors']:
+                for n in neigh_group:
+                    neighbor_name=n['hostname']
+                    local_intf_name=n['interface']
+
+                    if neighbor_name and neighbor_name in routeurs_map:
+                        n_id=int(neighbor_name[1:])
+                        id_lien=sorted([id,n_id])
+                        cle_lien=tuple(sorted([hostname, neighbor_name]))
+
+                        if cle_lien not in processed_links:
+                            processed_links.add(cle_lien)
+                            indice_lien=f"{id_lien[0]}{id_lien[1]}"
+                            prefixe_lien=f"{prefixe_physiques}:{indice_lien}"
+                            
+                            local_intf_obj = next((i for i in r['interfaces'] if i['name'] == local_intf_name), None)
+
+                            neighbor_r=routeurs_map[neighbor_name]
+                            neighbor_intf_obj= None
+
+                            if neighbor_r.get('neighbors'):
+                                for nb_groupe in neighbor_r['neighbors']:
+                                    for nb_item in nb_groupe:
+                                        if nb_item['hostname']== hostname:
+                                            nom_intf_cible=nb_item['interface']
+                                            neighbor_intf_obj=next(i for i in neighbor_r['interfaces'] if i['name']== nom_intf_cible)
+                            
+                            if local_intf_obj and neighbor_intf_obj:
+                                if id<n_id:
+                                    local_intf_obj['ipv6']=f"{prefixe_lien}::1/64"
+                                    neighbor_intf_obj['ipv6']=f"{prefixe_lien}::2/64"
+                                else:
+                                    local_intf_obj['ipv6']=f"{prefixe_lien}::2/64"
+                                    neighbor_intf_obj['ipv6']=f"{prefixe_lien}::1/64"
+
+    as_routeurs={}
+    for r in routeurs:
+        asn=r['asn']
+        if asn not in as_routeurs:
+            as_routeurs[asn]=[]
+        as_routeurs[asn].append(r)
+
+        if 'bgp_neighbors' in r:
+            pass
+            r['bgp_neighbors']=[]
+
+    for r in routeurs:
+        asn_r = r['asn']
+        id_r=int(r['hostname'][1:])
+        for paire in as_routeurs[asn_r]:
+            if paire['hostname']!=r['hostname']:
+                id_paire=int(paire['hostname'][1:])
+                loopback_paire=f"{prefixe_loopback}::{id_paire}"
                 r['bgp_neighbors'].append({
-                    'ip': voisin_loopback,
-                    'remote_as': asn
+                    'ip': loopback_paire,
+                    'remote_as':asn_r
                 })
-    
-    for r in routers:
-        asn = r.get('asn')
-        hostname = r['hostname']
-        if 'neighbors' in r and r['neighbors']:
-            for neighbor in r['neighbors']:
-                if isinstance(neighbor, list):
-                    for n in neighbor:
-                        neighbor_name = n.get('hostname') if isinstance(n, dict) else n
-                        local_intf_name = n.get('interface') if isinstance(n, dict) else None                  
-                        if neighbor_name and neighbor_name in router_map:
-                            neighbor_r = router_map[neighbor_name]
-                            neighbor_asn = neighbor_r.get('asn')
-                            if neighbor_asn != asn and neighbor_asn is not None:
-                                if 'neighbors' in neighbor_r and neighbor_r['neighbors']:
-                                    for nb in neighbor_r['neighbors']:
-                                        if isinstance(nb, list):
-                                            for nb_n in nb:
-                                                if nb_n.get('hostname') == hostname:
-                                                    neighbor_intf_name = nb_n.get('interface')
-                                                    if neighbor_intf_name:
-                                                        neighbor_intf_obj = next((i for i in neighbor_r['interfaces'] if i['name'] == neighbor_intf_name), None)
-                                                        if neighbor_intf_obj and neighbor_intf_obj.get('ipv6'):
-                                                            neighbor_bgp_ip = neighbor_intf_obj['ipv6'].split('/')[0] if '/' in neighbor_intf_obj['ipv6'] else neighbor_intf_obj['ipv6']
-                                                            r['bgp_neighbors'].append({
-                                                                'ip': neighbor_bgp_ip,
-                                                                'remote_as': neighbor_asn
-                                                            })
-                                                        break
-                                        
-    with open(intent_file, 'w') as f:
-        json.dump(data, f, indent=4)
+                
+        if 'neighbors' in r :
+            for neigh_groupe in r['neighbors']:
+                for n in neigh_groupe:
+                    neighbor_name=n['hostname']
+                    if neighbor_name in routeurs_map:
+                        neighbor_r=routeurs_map[neighbor_name]
+
+                        if neighbor_r['asn']!=r['asn']:
+                            nom_intf_cible=None
+                            for nb_groupe in neighbor_r['neighbors']:
+                                for nb_item in nb_groupe:
+                                    if nb_item['hostname']== r['hostname']:
+                                        nom_intf_cible=nb_item['interface']
+                                
+                            if nom_intf_cible:
+                                intf_neighbor=next((i for i in neighbor_r['interfaces'] if i['name']==nom_intf_cible), None)
+                                if intf_neighbor and 'ipv6' in intf_neighbor:
+                                    ip_neighbor=intf_neighbor['ipv6'].split('/')[0]
+                                    r['bgp_neighbors'].append({
+                                        'ip': ip_neighbor,
+                                        'remote_as': neighbor_r['asn']
+                                    })
+
+        with open(intent_file,'w') as f:
+            json.dump(data,f,indent=4)
 
     print(f"\nSuccess. {intent_file} a été modifié.")
 
 if __name__ == "__main__":
-    inject_ips_into_intent()
+    inject_ips_into_intent()    
 
-
-
+    
