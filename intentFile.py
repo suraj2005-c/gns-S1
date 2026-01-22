@@ -27,6 +27,10 @@ def initialisation_json(nb_as): #creation de dictionnaire
                     }
                 }
             ],
+            "plages_ip" :{
+                "loopback": "2001:100:100:100",
+                "physiques": "2001:100"
+            },
             "routeurs": []
         }
     
@@ -40,18 +44,36 @@ def init():
     as_nb = int(input("Combien d'AS voulez vous ? ")) #demande nb as
     intent_file = initialisation_json(as_nb)
     rtr_global_id = 1
+    router_as_map = {}  # Dictionnaire pour stocker l'AS de chaque routeur
+    
+    #demande le nombre de routeurs par AS pour remplir router_as_map
+    as_configs = []  # stocke les configs de chaque AS
     for i in range(1, as_nb + 1):
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
         protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
-
-        for j in range(1,rtr_nb+1): #pour chaque routeur dans l'as
+        as_configs.append({"as_num": i, "rtr_nb": rtr_nb, "protocole": protocole})
+        
+        #remplir router_as_map avec tous les routeurs de l AS 
+        for j in range(rtr_nb):
+            router_as_map[f"R{rtr_global_id + j}"] = i
+        
+        rtr_global_id += rtr_nb
+    
+    #cree les routeurs avec toutes les informations disponibles
+    rtr_global_id = 1
+    for config in as_configs:
+        i = config["as_num"]
+        rtr_nb = config["rtr_nb"]
+        protocole = config["protocole"]
+        
+        for j in range(1, rtr_nb + 1):
             data = add_rtr(rtr_global_id, i, protocole)  #initialise la structure du routeur
-            add_loopback(data,protocole) #ajt l'interface loopback
-            costs, external_intf = ask_n_add_neigh(rtr_global_id, data, protocole, i)
+            add_loopback(data, protocole) #ajt l'interface loopback
+            costs, external_intf = ask_n_add_neigh(rtr_global_id, data, protocole, i, router_as_map)
 
-            # On récupère la liste des interfaces qui sont externes et le dico cost qui associe chaque num a son cout
+            # on recupere la liste des interfaces qui sont externes et le dico cost qui associe chaque num a son cout
             for interface_num , cost in costs.items(): #creer l'interface pour les voisins declares
-                # Si l'interface est dans external_interfaces, on passe None au lieu du protocole
+                # si l'interface est dans external_interfaces, on passe None au lieu du protocole
                 current_proto = None if interface_num in external_intf else protocole
                 add_interface(data, current_proto, interface_num, cost)
             
@@ -90,23 +112,39 @@ def add_loopback(rtr_data, protocole):
         "protocole":[f"{protocole}"]
     })
 
-def ask_n_add_neigh(rtr_id, rtr_data,protocole, as_num):
+
+
+def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
     neigh_list = []
     interface = 1
     costs = {}
-    external_interfaces = [] # Liste pour noter quelles interfaces sortent de l'AS
+    external_interfaces = [] # liste pour noter quelles interfaces sortent de l'AS
     while True:
         rout = input(f"Voisin du routeur R{rtr_id} (ou 'STOP') ? ")
         if (rout == "STOP"): break
 
-        # demande l'as du voisin
-        v_as = int(input(f"Quel est l'AS de {rout} ? "))
+        # detecte automatiquement l AS du voisin 
+        if rout in router_as_map:
+            v_as = router_as_map[rout]
+            if v_as == as_num:
+                print(f"  → {rout} appartient au même AS (AS {v_as})")
+            else:
+                print(f"  → {rout} appartient à un AS différent (AS {v_as})")
+        else:
+            # i le routeur n existe pas encore -> on demande son AS
+            v_as = int(input(f"Quel est l'AS de {rout} ? "))
+            router_as_map[rout] = v_as  # Stocke pour les prochaines fois
+            if v_as == as_num:
+                print(f"->{rout} sera dans le même AS (AS {v_as})")
+            else:
+                print(f"-> {rout} sera dans un AS différent (AS {v_as})")
+        
         if v_as != as_num:
             external_interfaces.append(interface)
         
         int_name = f"GigabitEthernet{interface}/0"
         cost = None
-        # Demande le cout de ospf que si cest dans le meme as
+        # demande le cout de ospf que si cest dans le meme as
         if protocole.lower() == "ospf" and v_as == as_num:
             cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? "))
             costs[interface] = cost
