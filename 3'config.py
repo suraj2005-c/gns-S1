@@ -17,7 +17,7 @@ def check_system():
 
 def get_path():
     ask_path = input("Voulez-vous entrer le chemin vers votre projet GNS3 manuellement ? (y/n) ")
-
+    sys_type = check_system
     if ask_path == 'y':
         while True:
             raw_path = input("Veuillez entrer le chemin vers votre projet : ").strip()
@@ -38,7 +38,6 @@ def get_path():
     else:
         project_name = input("Entrez le nom du projet : ")
         user = getpass.getuser()
-        sys_type = check_system()
         project_path = None
 
         if sys_type == "wsl":
