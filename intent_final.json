@@ -1,0 +1,793 @@
+{
+    "as_numbers": [
+        {
+            "asn": 1,
+            "name": "AS1"
+        },
+        {
+            "asn": 2,
+            "name": "AS2"
+        }
+    ],
+    "protocoles": [
+        {
+            "nom": "RIP",
+            "version": "RIPng",
+            "parametres": {
+                "redistribution": true
+            }
+        },
+        {
+            "nom": "OSPF",
+            "version": "OSPFv3",
+            "parametres": {
+                "area": 0,
+                "redistribution": true
+            }
+        },
+        {
+            "nom": "BGP",
+            "parametres": {
+                "next_hop_self": true,
+                "redistribution": [
+                    "connected"
+                ],
+                "update_source": "Loopback0"
+            }
+        }
+    ],
+    "plages_ip": {
+        "loopback": "2001:100:100:100",
+        "physiques": "2001:100"
+    },
+    "routeurs": [
+        {
+            "hostname": "R1",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R2",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R3",
+                        "interface": "GigabitEthernet2/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R2",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R1",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R3",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R4",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R3",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R1",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R2",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R5",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R4",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet4/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R2",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R5",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R6",
+                        "interface": "GigabitEthernet3/0"
+                    },
+                    {
+                        "hostname": "R7",
+                        "interface": "GigabitEthernet4/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R5",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet4/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R3",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R4",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R6",
+                        "interface": "GigabitEthernet3/0"
+                    },
+                    {
+                        "hostname": "R7",
+                        "interface": "GigabitEthernet4/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R6",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": []
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R4",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R5",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R8",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R7",
+            "asn": 1,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "rip"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": []
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R4",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R5",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R9",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R8",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": []
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R6",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R10",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R11",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R9",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": []
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R7",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R10",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R11",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R10",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet4/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R8",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R9",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R11",
+                        "interface": "GigabitEthernet3/0"
+                    },
+                    {
+                        "hostname": "R12",
+                        "interface": "GigabitEthernet4/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R11",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet4/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R8",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R9",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R10",
+                        "interface": "GigabitEthernet3/0"
+                    },
+                    {
+                        "hostname": "R13",
+                        "interface": "GigabitEthernet4/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R12",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R10",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R13",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R14",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R13",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet3/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R11",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R12",
+                        "interface": "GigabitEthernet2/0"
+                    },
+                    {
+                        "hostname": "R14",
+                        "interface": "GigabitEthernet3/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        },
+        {
+            "hostname": "R14",
+            "asn": 2,
+            "interfaces": [
+                {
+                    "name": "Loopback0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ]
+                },
+                {
+                    "name": "GigabitEthernet1/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                },
+                {
+                    "name": "GigabitEthernet2/0",
+                    "ipv6": "",
+                    "protocole": [
+                        "ospf"
+                    ],
+                    "cost": 1
+                }
+            ],
+            "neighbors": [
+                [
+                    {
+                        "hostname": "R12",
+                        "interface": "GigabitEthernet1/0"
+                    },
+                    {
+                        "hostname": "R13",
+                        "interface": "GigabitEthernet2/0"
+                    }
+                ]
+            ],
+            "bgp_neighbors": []
+        }
+    ]
+}
