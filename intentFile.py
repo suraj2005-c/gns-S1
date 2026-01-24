@@ -52,7 +52,7 @@ def init():
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
         protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
         as_configs.append({"as_num": i, "rtr_nb": rtr_nb, "protocole": protocole})
-        
+
         #remplir router_as_map avec tous les routeurs de l AS 
         for j in range(rtr_nb):
             router_as_map[f"R{rtr_global_id + j}"] = i
@@ -68,6 +68,10 @@ def init():
         
         for j in range(1, rtr_nb + 1):
             data = add_rtr(rtr_global_id, i, protocole)  #initialise la structure du routeur
+           
+            print(f"\nConfiguration des politiques pour {data['hostname']}")
+            addPolicies(data)  
+
             add_loopback(data, protocole) #ajt l'interface loopback
             costs, external_intf = ask_n_add_neigh(rtr_global_id, data, protocole, i, router_as_map)
 
@@ -92,7 +96,8 @@ def add_rtr(rtr_global_id, as_num, protocole):
             "asn": as_num,
             "interfaces": [],
             "neighbors": [],
-            "bgp_neighbors": []
+            "bgp_neighbors": [],
+            "bgp_policies": []
          }
     return data  
 
@@ -155,6 +160,34 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
         interface += 1
     rtr_data["neighbors"].append(neigh_list)
     return costs, external_interfaces
+
+
+def addPolicies(rtr_data):
+
+    while True:
+        print("Veuillez donner le nom d'une politique de routage à ajouter (Local pref, AS path length ou STOP): ")
+        policy_name = input("Nom de la politique : ")
+        print(f"Politique {policy_name} ajoutée.")
+        # Implémentation des politiques de routage à ajouter ici
+        if policy_name=="Local pref":
+            
+            local_pref_value = input("Valeur de la préférence locale (ex : 100) : ")
+            rtr_data["bgp_policies"].append({
+                "type": policy_name,
+                "valeur": local_pref_value
+            })
+        elif policy_name=="AS path length":
+                As_val = input("Valeur de la longueur du chemin AS ex : 4 : ")
+                rtr_data["bgp_policies"].append({
+                    "type": policy_name,
+                    "count": As_val
+                })
+                
+        elif policy_name=="STOP":
+            break
+        else:
+            print("Policy inconnue")
+
 
 if __name__ == '__main__':
     init()
