@@ -151,7 +151,7 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
         cost = None
         # demande le cout de ospf que si cest dans le meme as
         if protocole.lower() == "ospf" and v_as == as_num:
-            cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? "))
+            cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? (Valeur par défaut = 1) ") or "1")
             costs[interface] = cost
         else:
             costs[interface] = None
