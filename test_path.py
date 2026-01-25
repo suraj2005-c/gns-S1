@@ -1,6 +1,7 @@
 import os
 import getpass
 import platform
+import re
 
 def check_system():
     version = platform.release().lower()
