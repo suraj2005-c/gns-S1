@@ -7,8 +7,8 @@ import platform
 intent_file='intent_file.json' #fichier source
 
 def genere_config():
-
-
+    intent_file='intent_file.json' #fichier source
+    output_dir='configs' #dossier contenant les fichiers .cfg
     try:
         with open(intent_file,'r') as f:
             data=json.load(f) #lis et converti en dico
