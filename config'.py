@@ -1,10 +1,6 @@
 import json
 import os #créer des dossiers et manipuler les chemins de fichiers
 import re #recherches rapide
-import getpass
-import platform
-
-intent_file='intent_file.json' #fichier source
 
 def genere_config():
     intent_file='intent_file.json' #fichier source
