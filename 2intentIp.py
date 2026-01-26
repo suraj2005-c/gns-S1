@@ -104,20 +104,94 @@ def inject_ips_into_intent():
                                 for nb_item in nb_groupe:
                                     if nb_item['hostname']== r['hostname']:
                                         nom_intf_cible=nb_item['interface']
-                                
+
+                            #relationship = relation(r['hostname'], neighbor_name, neighbor_r['asn'])
+                            #addPolicies(r['asn'], relationship)
+                            
+                
                             if nom_intf_cible:
                                 intf_neighbor=next((i for i in neighbor_r['interfaces'] if i['name']==nom_intf_cible), None)
                                 if intf_neighbor and 'ipv6' in intf_neighbor:
                                     ip_neighbor=intf_neighbor['ipv6'].split('/')[0]
-                                    r['bgp_neighbors'].append({
+                                    # On demande la relation MAINTENANT
+                                    rel = relation(r['hostname'], neighbor_name, neighbor_r['asn'])
+                                    
+                                    if rel == "STOP":
+                                        continue # On saute ce voisin si STOP
+                                    # On récupère les infos de politique
+                                    policy_infos = addPolicies(r['asn'], rel)
+
+                                    # On crée l'objet FINAL fusionné
+                                    neighbor_info = {
                                         'ip': ip_neighbor,
                                         'remote_as': neighbor_r['asn']
-                                    })
+                                    }
+                                    # On ajoute les clés de la politique dans l'objet voisin
+                                    neighbor_info.update(policy_infos)
+
+                                    # 4. On ajoute le tout dans la liste en UNE fois
+                                    r['bgp_neighbors'].append(neighbor_info)
+
 
         with open(intent_file,'w') as f:
             json.dump(data,f,indent=4)
 
     print(f"\nSuccess. {intent_file} a été modifié.")
+
+
+def get_community(asn, relationship):
+    if relationship == "customer":
+        return f"{asn}:100"
+    elif relationship == "peer":
+        return f"{asn}:200"
+    elif relationship == "provider":
+        return f"{asn}:300"
+    return None
+
+
+def relation(r_name, neighbor_name, neighbor_as):
+    
+    while True:
+        print(f"\n[BGP] Configuration de {r_name} vers {neighbor_name} (AS {neighbor_as})")
+        relationship = input("Relationship? (ex : 'peer', 'provider', 'customer') ou STOP : ")
+        if relationship == "STOP":
+            return "STOP"
+        elif relationship in ["peer", "provider", "customer"]:
+            return relationship
+        else:
+            print("relationship unknown. Please enter 'peer', 'provider', 'customer' or 'STOP'.")
+
+        # Implémentation des politiques de routage à ajouter ici
+def addPolicies(asn, relationship):
+         
+        if relationship=="provider":
+            data = {}
+            local_pref_value = 50
+            data={
+                "relationship" : relationship,
+                "local_pref_val": local_pref_value,
+                "community": get_community(asn, relationship)
+            }
+        elif relationship=="customer":
+                local_pref_value = 200
+                data={
+                "relationship" : relationship,
+                "local_pref_val": local_pref_value,
+                "community": get_community(asn, relationship)
+                }
+        elif relationship=="peer":
+                local_pref_value = 100
+                data={
+                    "relationship" : relationship,
+                    "local_pref_val": local_pref_value,
+                    "community": get_community(asn, relationship)
+                }   
+        
+
+        else:
+            print("relationship unknown. Please enter 'peer', 'provider', 'customer' or 'STOP'.")
+        return data
+
 
 if __name__ == "__main__":
     inject_ips_into_intent()    
