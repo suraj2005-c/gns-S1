@@ -1,5 +1,6 @@
 # générateur de intent_file pour le Projet GNS3
 import json
+import re
 
 intent_file = open("intent_file.json", "w")
 
@@ -97,7 +98,6 @@ def add_rtr(rtr_global_id, as_num, protocole):
             "interfaces": [],
             "neighbors": [],
             "bgp_neighbors": [],
-            "bgp_policies": []
          }
     return data  
 
@@ -151,7 +151,7 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
         cost = None
         # demande le cout de ospf que si cest dans le meme as
         if protocole.lower() == "ospf" and v_as == as_num:
-            cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? (Valeur par défaut = 1) ") or "1")
+            cost = int(input(f"Quel est le coût OSPF pour l'interface vers {rout} ? "))
             costs[interface] = cost
         else:
             costs[interface] = None
@@ -161,33 +161,56 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
     rtr_data["neighbors"].append(neigh_list)
     return costs, external_interfaces
 
+def get_community(asn, relationship):
+    if relationship == "customer":
+        return f"{asn}:100"
+    elif relationship == "peer":
+        return f"{asn}:200"
+    elif relationship == "provider":
+        return f"{asn}:300"
+    return None
+
 
 def addPolicies(rtr_data):
-
+    
     while True:
-        print("Veuillez donner le nom d'une politique de routage à ajouter (Local pref, AS path length ou STOP): ")
-        policy_name = input("Nom de la politique : ")
-        print(f"Politique {policy_name} ajoutée.")
-        # Implémentation des politiques de routage à ajouter ici
-        if policy_name=="Local pref":
-            
-            local_pref_value = input("Valeur de la préférence locale (ex : 100) : ")
-            rtr_data["bgp_policies"].append({
-                "type": policy_name,
-                "valeur": local_pref_value
-            })
-        elif policy_name=="AS path length":
-                As_val = input("Valeur de la longueur du chemin AS ex : 4 : ")
-                rtr_data["bgp_policies"].append({
-                    "type": policy_name,
-                    "count": As_val
-                })
-                
-        elif policy_name=="STOP":
-            break
-        else:
-            print("Policy inconnue")
 
+        relationship = input("Relationship? (ex : 'peer', 'provider', 'customer') ou STOP : ")
+    
+        # Implémentation des politiques de routage à ajouter ici
+
+        if relationship=="provider":
+            
+            local_pref_value = 50
+            rtr_data["bgp_neighbors"].append({
+                "relationship" : relationship,
+                "type": "Local pref",
+                "local pref val": local_pref_value,
+                "community": get_community(rtr_data["asn"], relationship)
+            })
+        elif relationship=="customer":
+                local_pref_value = 200
+                rtr_data["bgp_neighbors"].append({
+                    "relationship" : relationship,
+                    "type": "Local pref",
+                    "local pref val": local_pref_value,
+                    "community": get_community(rtr_data["asn"], relationship)
+                })
+        elif relationship=="peer":
+                local_pref_value = 100
+                rtr_data["bgp_neighbors"].append({
+                    "relationship" : relationship,
+                    "type": "Local pref",
+                    "local pref val": local_pref_value,
+                    "community": get_community(rtr_data["asn"], relationship)
+
+                })
+
+        elif relationship=="STOP":
+            break
+        
+        else:
+            print("relationship unknown. Please enter 'peer', 'provider', 'customer' or 'STOP'.")
 
 if __name__ == '__main__':
     init()
