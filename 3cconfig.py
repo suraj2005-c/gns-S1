@@ -81,13 +81,13 @@ def trouver_fichier_config(dossier_router, nom_fichier):
 def configPolicies(lines, r):
     asn = r["asn"]
 
-    # 1️⃣ Community-lists
+    # Community-lists
     lines.append(f"ip community-list standard CUSTOMER permit {asn}:100")
     lines.append(f"ip community-list standard PEER permit {asn}:200")
     lines.append(f"ip community-list standard PROVIDER permit {asn}:300")
     lines.append("!")
 
-    # 2️⃣ Route-maps d'entrée
+    # Route-maps entree
     lines.append("route-map FROM-CUSTOMER permit 10")
     lines.append(f" set community {asn}:100 additive")
     lines.append("!")
@@ -100,7 +100,7 @@ def configPolicies(lines, r):
     lines.append(f" set community {asn}:300 additive")
     lines.append("!")
 
-    # 3️⃣ Route-maps de sortie
+    # Route-maps sortie
     lines.append("route-map EXPORT-TO-PROVIDER permit 10")
     lines.append(" match community CUSTOMER")
     lines.append("!")
