@@ -125,7 +125,7 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
     costs = {}
     external_interfaces = [] # liste pour noter quelles interfaces sortent de l'AS
     while True:
-        rout = input(f"Voisin du routeur R{rtr_id} (ou 'STOP') ? ")
+        rout = input(f"Entrer les voisins du routeur R{rtr_id} un à la fois (ou 'STOP') ? ")
         if (rout == "STOP"): break
 
         # detecte automatiquement l AS du voisin 
@@ -175,7 +175,7 @@ def addPolicies(rtr_data):
     
     while True:
 
-        relationship = input("Relationship? (ex : 'peer', 'provider', 'customer') ou STOP : ")
+        relationship = input("Nature de la relation ? (ex : 'peer', 'provider', 'customer') ou STOP : ")
     
         # Implémentation des politiques de routage à ajouter ici
 
