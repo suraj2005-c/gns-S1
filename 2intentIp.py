@@ -152,7 +152,7 @@ def get_community(asn, relationship):
 def relation(r_name, neighbor_name, neighbor_as):
     
     while True:
-        print(f"\n[BGP] Configuration de {r_name} vers {neighbor_name} (AS {neighbor_as})")
+        print(f"\n[BGP] Configuration de {neighbor_name} vu par {r_name} (AS {neighbor_as})")
         relationship = input("Relationship? (ex : 'peer', 'provider', 'customer') ou STOP : ")
         if relationship == "STOP":
             return "STOP"
