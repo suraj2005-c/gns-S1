@@ -42,6 +42,7 @@ def initialisation_json(nb_as): #creation de dictionnaire
 
 def init():
 
+
     as_nb = int(input("Combien d'AS voulez vous ? ")) #demande nb as
     intent_file = initialisation_json(as_nb)
     rtr_global_id = 1
@@ -51,7 +52,9 @@ def init():
     as_configs = []  # stocke les configs de chaque AS
     for i in range(1, as_nb + 1):
         rtr_nb = int(input(f"Combien de routeurs pour l'AS {i} ? "))
-        protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
+        protocole = "none"
+        if rtr_nb > 1:
+            protocole = str.casefold(input(f"Quel protocole voulez-vous utiliser pour l'AS {i} ? "))
         as_configs.append({"as_num": i, "rtr_nb": rtr_nb, "protocole": protocole})
 
         #remplir router_as_map avec tous les routeurs de l AS 
@@ -71,7 +74,6 @@ def init():
             data = add_rtr(rtr_global_id, i, protocole)  #initialise la structure du routeur
            
             print(f"\nConfiguration des politiques pour {data['hostname']}")
-            addPolicies(data)  
 
             add_loopback(data, protocole) #ajt l'interface loopback
             costs, external_intf = ask_n_add_neigh(rtr_global_id, data, protocole, i, router_as_map)
@@ -161,56 +163,7 @@ def ask_n_add_neigh(rtr_id, rtr_data, protocole, as_num, router_as_map):
     rtr_data["neighbors"].append(neigh_list)
     return costs, external_interfaces
 
-def get_community(asn, relationship):
-    if relationship == "customer":
-        return f"{asn}:100"
-    elif relationship == "peer":
-        return f"{asn}:200"
-    elif relationship == "provider":
-        return f"{asn}:300"
-    return None
 
-
-def addPolicies(rtr_data):
-    
-    while True:
-
-        relationship = input("Nature de la relation ? (ex : 'peer', 'provider', 'customer') ou STOP : ")
-    
-        # Implémentation des politiques de routage à ajouter ici
-
-        if relationship=="provider":
-            
-            local_pref_value = 50
-            rtr_data["bgp_neighbors"].append({
-                "relationship" : relationship,
-                "type": "Local pref",
-                "local pref val": local_pref_value,
-                "community": get_community(rtr_data["asn"], relationship)
-            })
-        elif relationship=="customer":
-                local_pref_value = 200
-                rtr_data["bgp_neighbors"].append({
-                    "relationship" : relationship,
-                    "type": "Local pref",
-                    "local pref val": local_pref_value,
-                    "community": get_community(rtr_data["asn"], relationship)
-                })
-        elif relationship=="peer":
-                local_pref_value = 100
-                rtr_data["bgp_neighbors"].append({
-                    "relationship" : relationship,
-                    "type": "Local pref",
-                    "local pref val": local_pref_value,
-                    "community": get_community(rtr_data["asn"], relationship)
-
-                })
-
-        elif relationship=="STOP":
-            break
-        
-        else:
-            print("relationship unknown. Please enter 'peer', 'provider', 'customer' or 'STOP'.")
 
 if __name__ == '__main__':
     init()
