@@ -1,4 +1,4 @@
-Notre projet est un générateur automatique de configurations réseau pour GNS3 qui facilite le déploiement d'architectures multi-AS complexes. Configurer manuellement des dizaines de routeurs avec BGP est très redondant et source d'erreurs, nous avons donc voulu automatiser l'ensemble du processus.
+Notre projet est un générateur automatique de configurations réseau pour GNS3 qui facilite le déploiement d'architectures multi-AS complexes. Configurer manuellement des dizaines de routeurs avec BGP est très redondant et source d'erreurs, c'est dans cette perspective que nous avons voulu automatiser l'ensemble du processus.
 
 Nous avons structuré le projet en trois phases : d'abord on collecte toutes les informations nécessaires via une interface interactive - le nombre d'AS, les routeurs par AS, les protocoles utilisés, les voisinages entre routeurs, etc.
 
