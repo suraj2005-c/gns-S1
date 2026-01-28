@@ -72,11 +72,6 @@ def trouver_fichier_config(dossier_router, nom_fichier):
             return os.path.join(racines, nom_fichier)
         
 project_path = get_path()
-
-def trouver_fichier_config(dossier_router, nom_fichier):
-    for racines, dirs, files in os.walk(dossier_router):
-        if nom_fichier in files:
-            return os.path.join(racines, nom_fichier)
         
 def configPolicies(lines, r):
     asn = r["asn"]
