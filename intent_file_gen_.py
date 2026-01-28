@@ -73,8 +73,6 @@ def init():
         for j in range(1, rtr_nb + 1):
             data = add_rtr(rtr_global_id, i, protocole)  #initialise la structure du routeur
            
-            print(f"\nConfiguration des politiques pour {data['hostname']}")
-
             add_loopback(data, protocole) #ajt l'interface loopback
             costs, external_intf = ask_n_add_neigh(rtr_global_id, data, protocole, i, router_as_map)
 
