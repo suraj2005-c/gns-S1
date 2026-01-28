@@ -215,7 +215,7 @@ def genere_config():
                 
                 if 'networks' in r: #annonce les réseaux si y'en a
                     for net in r['networks']:
-                        lines.append(f"  network {net}")
+                       lines.append(f"  network {net} route-map TAG-LOCAL")
                 
                 # Activation et Politiques par voisin
                 for n in bgp_neighbors:
