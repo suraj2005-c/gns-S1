@@ -86,6 +86,10 @@ def configPolicies(lines, r):
     lines.append(f"ip community-list standard PEER permit {asn}:200")
     lines.append(f"ip community-list standard PROVIDER permit {asn}:300")
     lines.append("!")
+    # Route-maps sortie fixe pour marquer les routes locales
+    lines.append("route-map TAG-LOCAL permit 10")
+    lines.append(f" set community {asn}:100") # On leur donne le badge CUSTOMER
+    lines.append("!")
 
     # Route-maps entree fixe pour chaque type de voisin regarde d'ou ça vient et les marques
     lines.append("route-map FROM-CUSTOMER permit 10")
@@ -207,7 +211,7 @@ def genere_config():
                 
                 lines.append(" !")
                 lines.append(" address-family ipv6")
-                lines.append("  redistribute connected")
+                lines.append("  redistribute connected route-map TAG-LOCAL") #annonce les routes connectées avec la route map
                 
                 if 'networks' in r: #annonce les réseaux si y'en a
                     for net in r['networks']:
@@ -263,5 +267,4 @@ def genere_config():
 
 if __name__=='__main__':
     genere_config()
-
 
