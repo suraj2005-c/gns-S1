@@ -5,3 +5,12 @@ Nous avons structuré le projet en trois phases : d'abord on collecte toutes les
 Pour l'adressage IPv6, nous avons implémenté un système hiérarchique cohérent. Les loopbacks suivent le schéma 2001:100:100:100::X/128 où X correspond à l'ID du routeur (par exemple R5 devient ::5/128). Pour les liens physiques, nous concaténons les IDs des deux routeurs connectés dans le préfixe 2001:100:XY::/64 (exemple : le lien entre R6 et R8 donne 2001:100:68::/64). Le routeur avec l'ID le plus petit reçoit ::1, l'autre ::2. Cela évite les conflits d'adresses et reste prévisible.
 
 Pour les politiques BGP, nous nous sommes basés sur les relations commerciales standard. Pour chaque connexion externe, on demande s'il s'agit d'un customer, peer ou provider. Chaque relation possède sa local-preference spécifique (200 pour customer car routes prioritaires, 100 pour peer, 50 pour provider) et sa communauté BGP associée (ASN:100, ASN:200, ASN:300). Nous générons automatiquement les route-maps qui appliquent ces préférences à l'import et filtrent à l'export selon les règles de transit classiques - nous annonçons uniquement nos clients aux peers et providers, respectant ainsi les politiques de routage inter-domaines.
+
+
+# Comment lancer le code
+
+1- Exécuter intent_file_gen.py : Entrer le nombre d'as souhaité puis, pour chaque as, son nombre de routeurs souhaités et le protocole de routage utilisé. Enfin pour chaque routeur donner ses voisins, si le voisin est dans le meme as et que l'as utilise ospf, entrer le cout ospf avant d'entrer un nouveau voisin.
+
+2- Exécuter intentIp.py : pour chaque lien inter-as entrer la relation.
+
+3- Exécuter configGen.py : entrer soit le chemin absolu du projet soit le nom du projet pour appliqué la configuration a tous les routeurs.
