@@ -90,14 +90,17 @@ def configPolicies(lines, r):
     # Route-maps entree
     lines.append("route-map FROM-CUSTOMER permit 10")
     lines.append(f" set community {asn}:100 additive")
+    lines.append(" set local-preference 200")
     lines.append("!")
 
     lines.append("route-map FROM-PEER permit 10")
     lines.append(f" set community {asn}:200 additive")
+    lines.append(" set local-preference 100")
     lines.append("!")
 
     lines.append("route-map FROM-PROVIDER permit 10")
     lines.append(f" set community {asn}:300 additive")
+    lines.append(" set local-preference 50")
     lines.append("!")
 
     # Route-maps sortie
@@ -204,23 +207,7 @@ def genere_config():
 
                     if n.get('update_source'):
                         lines.append(f" neighbor {n['ip']} update-source {n['update_source']}")
-                    relationship = n.get("relationship")
-
-                    if relationship == "customer":
-                        lines.append(f" neighbor {n['ip']} route-map FROM-CUSTOMER in")
-
-                    elif relationship == "peer":
-                        lines.append(f" neighbor {n['ip']} route-map FROM-PEER in")
-                        lines.append(f" neighbor {n['ip']} route-map EXPORT-TO-PEER out")
-
-                    elif relationship == "provider":
-                        lines.append(f" neighbor {n['ip']} route-map FROM-PROVIDER in")
-                        lines.append(f" neighbor {n['ip']} route-map EXPORT-TO-PROVIDER out")
                     
-                    if n['remote_as'] == asn:
-                        lines.append(f" neighbor {n['ip']} send-community")
-
-
                 
                 lines.append(" !")
                 lines.append(" address-family ipv6") #famille d'adresse ipv6
@@ -229,16 +216,27 @@ def genere_config():
                 if 'networks' in r:
                     for net in r['networks']:
                         lines.append(f"  network {net}")
-                
+
                 for n in bgp_neighbors:
-                    lines.append(f"  neighbor {n['ip']} activate") #active le voisin
+                    lines.append(f"  neighbor {n['ip']} activate")
+                    relationship = n.get("relationship")
+                    
+                    if relationship == "customer":
+                        lines.append(f"  neighbor {n['ip']} route-map FROM-CUSTOMER in")
+                    elif relationship == "peer":
+                        lines.append(f"  neighbor {n['ip']} route-map FROM-PEER in")
+                    elif relationship == "provider":
+                        lines.append(f"  neighbor {n['ip']} route-map FROM-PROVIDER in")
+                    if relationship == "peer":
+                        lines.append(f"  neighbor {n['ip']} route-map EXPORT-TO-PEER out")
+                    elif relationship == "provider":
+                        lines.append(f"  neighbor {n['ip']} route-map EXPORT-TO-PROVIDER out")
                     if n['remote_as'] == asn:
                         lines.append(f"  neighbor {n['ip']} next-hop-self")
                     elif n.get('next_hop_self'):
                         lines.append(f"  neighbor {n['ip']} next-hop-self")
-                    elif n.get('next_hop_self'):
-                        lines.append(f"  neighbor {n['ip']} next-hop-self")
-                #
+                    lines.append(f"  neighbor {n['ip']} send-community")
+                         
                 lines.append(" exit-address-family")
             
             lines.append(" exit")
@@ -270,5 +268,4 @@ def genere_config():
 
 if __name__=='__main__':
     genere_config()
-
 
